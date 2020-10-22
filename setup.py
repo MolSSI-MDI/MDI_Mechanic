@@ -21,7 +21,7 @@ except:
 
 setup(
     # Self-descriptive entries which should always be present
-    name='MDI_Mechanic',
+    name='mdimechanic',
     author='Taylor Barnes',
     author_email='mdi@molssi.org',
     description=short_description[0],
