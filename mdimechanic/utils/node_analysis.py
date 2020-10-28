@@ -320,6 +320,8 @@ def node_graph( base_path ):
 
     print("node_edge_paths: " + str(node_edge_paths))
 
+    package_path = get_package_path()
+
     nodes = {}
     edges = []
     for edge_path in node_edge_paths:
@@ -387,11 +389,12 @@ dot.render( graph_path )
     #                               "cd /repo/MDI_Mechanic/scripts/utils && python graph.py"],
     #                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     graph_proc = subprocess.Popen( ["docker", "run", "--rm",
-                                   "-v", str(base_path) + ":/repo",
-                                   "-it", "mdi_mechanic/mdi_mechanic",
-                                   "bash", "-c",
-                                    "cd /repo/MDI_Mechanic/scripts/utils && python -c \"" + graph_script + "\""],
-                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                    "-v", str(base_path) + ":/repo",
+                                    "-v", str(package_path) + ":/MDI_Mechanic",
+                                    "-it", "mdi_mechanic/mdi_mechanic",
+                                    "bash", "-c",
+                                    "cd /MDI_Mechanic/mdimechanic/utils && python -c \"" + graph_script + "\""],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     graph_tup = graph_proc.communicate()
     if graph_proc.returncode != 0:
         docker_error( graph_tup, "Graph process returned an error." )
