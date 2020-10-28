@@ -5,6 +5,42 @@ A tool for testing and developing MDI-enabled projects.
 Handles the primary functions
 """
 
+####
+import os
+import traceback
+from . import report
+from . import install
+
+def get_calling_path():
+    # Get the name of the file that called the calling function
+    caller_name = traceback.extract_stack()[-3][0]
+
+    # Get the path to the file that called this function
+    caller_path = os.path.realpath( caller_name )
+    caller_directory = os.path.dirname( caller_path )
+    
+    return caller_directory
+    
+
+
+def run( engine_name, *args):
+    base_path = get_calling_path()
+
+
+
+def command_report():
+    print("Starting a report")
+    report_dir = os.getcwd()
+    report.generate_report( report_dir )
+
+
+
+def command_build():
+    print("Starting the installation")
+    report_dir = os.getcwd()
+    install.install_all( report_dir )
+
+
 
 def canvas(with_attribution=True):
     """

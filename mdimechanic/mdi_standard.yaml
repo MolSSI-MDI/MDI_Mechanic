@@ -1,0 +1,138 @@
+commands:
+  "@":
+    description: "Test"
+  "<@":
+    recv:
+      datatype: MDI_CHAR
+      count: MDI_NAME_LENGTH
+  "<CELL":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 9
+  ">CELL":
+    send:
+      datatype: MDI_DOUBLE
+      count: 9
+  "<CELL_DISPL":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 3
+  ">CELL_DISPL":
+    send:
+      datatype: MDI_DOUBLE
+      count: 3
+  "<CHARGES":
+    recv:
+      datatype: MDI_DOUBLE
+      count: <NATOMS
+  ">CHARGES":
+    send:
+      datatype: MDI_DOUBLE
+      count: <NATOMS
+  "<COORDS":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 3 * <NATOMS
+  ">COORDS":
+    send:
+      datatype: MDI_DOUBLE
+      count: 3 * <NATOMS
+  "<DIMENSIONS":
+    recv:
+      datatype: MDI_INT
+      count: 3
+  "<ELEC_MULT":
+    recv:
+      datatype: MDI_INT
+      count: 1
+  ">ELEC_MULT":
+    send:
+      datatype: MDI_INT
+      count: 1
+  "<ELEMENTS":
+    recv:
+      datatype: MDI_INT
+      count: <NATOMS
+  "<ENERGY":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  "EXIT":
+  ">FORCES":
+    send:
+      datatype: MDI_DOUBLE
+      count: 3 * <NATOMS
+  ">+FORCES":
+    send:
+      datatype: MDI_DOUBLE
+      count: 3 * <NATOMS
+  "<FORCES":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 3 * <NATOMS
+  "@INIT_MD":
+  "@INIT_OPTG":
+  "<KE":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  "<KE_ELEC":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  "<KE_NUC":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  "<MASSES":
+    recv:
+      datatype: MDI_DOUBLE
+      count: <NATOMS
+  ">MASSES":
+    send:
+      datatype: MDI_DOUBLE
+      count: <NATOMS
+  "<NAME":
+    recv:
+      datatype: MDI_CHAR
+      count: MDI_NAME_LENGTH
+  "<NATOMS":
+    recv:
+      datatype: MDI_INT
+      count: 1
+  "<PE":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  "<PE_ELEC":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  "<PE_NUC":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  "<STRESS":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 9
+  ">STRESS":
+    send:
+      datatype: MDI_DOUBLE
+      count: 9
+  "<TOTCHARGE":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 1
+  ">TOTCHARGE":
+    send:
+      datatype: MDI_DOUBLE
+      count: 1
+  "<VELOCITIES":
+    recv:
+      datatype: MDI_DOUBLE
+      count: 3 * <NATOMS
+  ">VELOCITIES":
+    send:
+      datatype: MDI_DOUBLE
+      count: 3 * <NATOMS

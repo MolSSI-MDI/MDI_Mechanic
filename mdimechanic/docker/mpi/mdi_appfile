@@ -1,0 +1,2 @@
+-host driverhost -np 1 bash /repo/MDI_Mechanic/.temp/docker_mdi_mechanic.sh
+-host enginehost -np 1 bash /repo/MDI_Mechanic/.temp/docker_mdi_engine.sh

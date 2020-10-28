@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mdi_mechanic:
+    #build: .
+    image: "mdi_mechanic/mdi_mechanic"
+    volumes:
+      - "${MDIMECH_WORKDIR}:/repo"
+      - "${MDIMECH_PACKAGEDIR}:/MDI_Mechanic"
+    networks:
+      mdinet:
+        aliases:
+          - driverhost
+    depends_on:
+      - engine
+  engine:
+    #build: ../../user
+    image: "mdi_mechanic/lammps"
+    volumes:
+      - "${MDIMECH_WORKDIR}:/repo"
+      - "${MDIMECH_PACKAGEDIR}:/MDI_Mechanic"
+    networks:
+      mdinet:
+        aliases:
+          - enginehost
+
+networks:
+  mdinet:
+    driver: "bridge"
