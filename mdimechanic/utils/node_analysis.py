@@ -124,7 +124,11 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         exec_out = format_return(exec_tup[0])
         exec_err = format_return(exec_tup[1])
         if exec_proc.returncode != 0:
-            print("FAILED", flush=True)
+            if sys.version_info[0] >= 3:
+                print("FAILED", flush=True)
+            else:
+                print("FAILED")
+                sys.stdout.flush()
             docker_down( base_path, docker_path )
             return False
 
@@ -143,18 +147,30 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         up_out = format_return(up_tup[0])
         up_err = format_return(up_tup[1])
         if up_proc.returncode != 0:
-            print("FAILED", flush=True)
+            if sys.version_info[0] >= 3:
+                print("FAILED", flush=True)
+            else:
+                print("FAILED")
+                sys.stdout.flush()
             docker_down( base_path, docker_path )
             return False
 
 
 
     if docker_down( base_path, docker_path ) != 0:
-        print("FAILED", flush=True)
+        if sys.version_info[0] >= 3:
+            print("FAILED", flush=True)
+        else:
+            print("FAILED")
+            sys.stdout.flush()
         return False
 
 
-    print("WORKED", flush=True)
+    if sys.version_info[0] >= 3:
+        print("WORKED", flush=True)
+    else:
+        print("WORKED")
+        sys.stdout.flush()
     return True
 
 
