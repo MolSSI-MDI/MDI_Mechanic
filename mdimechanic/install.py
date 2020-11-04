@@ -1,12 +1,9 @@
 import os
-import yaml
 from .utils import utils as ut
 
 def install_all( base_path ):
     # Read the yaml file
-    yaml_path = os.path.join( base_path, "mdimechanic.yml" )
-    with open(yaml_path, "r") as yaml_file:
-        mdimechanic_yaml = yaml.load(yaml_file, Loader=yaml.FullLoader)
+    mdimechanic_yaml = ut.get_mdimechanic_yaml( base_path )
 
     # Read the script to build the image from the yaml file
     build_image_lines = mdimechanic_yaml['docker']['build_image']

@@ -1,6 +1,7 @@
 import os
 import pickle
 import subprocess
+import yaml
 
 def get_base_path():
     # Get the base directory
@@ -70,3 +71,9 @@ def get_mdi_standard( base_path ):
     with open(standard_file, 'rb') as handle:
         standard = pickle.load(handle)
     return standard
+
+def get_mdimechanic_yaml( base_path ):
+    yaml_path = os.path.join( base_path, "mdimechanic.yml" )
+    with open(yaml_path, "r") as yaml_file:
+        mdimechanic_yaml = yaml.load(yaml_file, Loader=yaml.FullLoader)
+    return mdimechanic_yaml

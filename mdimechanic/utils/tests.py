@@ -1,22 +1,26 @@
 import os
 import subprocess
 import shutil
-from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path
+from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml
 
 
-#def format_return(input_string):
-#    my_string = input_string.decode('utf-8')
-
-    # remove any \r special characters, which sometimes are added on Windows
-#    my_string = my_string.replace('\r','')
-
-#    return my_string
 
 def test_validate( base_path ):
     # Get the base directory
-    #file_path = os.path.dirname(os.path.realpath(__file__))
-    #base_path = os.path.dirname( os.path.dirname( os.path.dirname( file_path ) ) )
     package_path = get_package_path()
+
+    # Read the yaml script for validating the engine build
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+    validate_engine_lines = mdimechanic_yaml['docker']['validate_engine']
+    validate_engine_script = ''
+    for line in validate_engine_lines:
+        validate_engine_script += line + '\n'
+
+    # Write the script to validate the engine build
+    validate_script_path = os.path.join( base_path, ".mdimechanic", ".temp", "validate_engine.sh" )
+    os.makedirs(os.path.dirname(validate_script_path), exist_ok=True)
+    with open(validate_script_path, "w") as script_file:
+        script_file.write( validate_engine_script )
 
     # Run the test
     test_proc = subprocess.Popen( ["docker", "run", "--rm",
@@ -24,7 +28,7 @@ def test_validate( base_path ):
                                    "-v", str(package_path) + ":/MDI_Mechanic",
                                    "-it", "mdi_mechanic/lammps",
                                    "bash", "-c",
-                                   "cd /repo/user && ./validate_build.sh"],
+                                   "cd /repo && bash .mdimechanic/.temp/validate_engine.sh"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     test_tup = test_proc.communicate()
     test_out = format_return(test_tup[0])
