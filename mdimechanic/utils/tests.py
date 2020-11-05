@@ -39,10 +39,7 @@ def test_validate( base_path ):
 
 
 def test_min( base_path ):
-    # Get the base directory
-    #file_path = os.path.dirname(os.path.realpath(__file__))
-    #base_path = os.path.dirname( os.path.dirname( os.path.dirname( file_path ) ) )
-    #docker_path = os.path.join( base_path, "MDI_Mechanic", "docker" )
+    # Get the path to the docker-compose file
     docker_path = get_compose_path( "tcp" )
 
     # Write the run script for MDI Mechanic
@@ -58,24 +55,26 @@ def test_min( base_path ):
         file.writelines( docker_lines )
 
     # Write the run script for the engine
-    docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
-    docker_lines = [ "#!/bin/bash\n",
-                     "\n",
-                     "# Exit if any command fails\n",
-                     "\n",
-                     "cd /repo/user/mdi_tests/.work\n",
-                     "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n",
-                     "./run.sh\n"]
-    os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    with open(docker_file, 'w') as file:
-        file.writelines( docker_lines )
+    # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+    script_lines = mdimechanic_yaml['engine_tests'][0]['script']
+    script = "#!/bin/bash\nset -e\n"
+    script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
+    for line in script_lines:
+        script += line + '\n'
+
+    # Write the script to run the test
+    script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
+    os.makedirs(os.path.dirname(script_path), exist_ok=True)
+    with open(script_path, "w") as script_file:
+        script_file.write( script )
 
     # Prepare the working directory
-    src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
-    dst_path = os.path.join( base_path, "user", "mdi_tests", ".work" )
-    if os.path.isdir( dst_path ):
-        shutil.rmtree( dst_path )
-    shutil.copytree( src_path, dst_path )
+    #src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
+    #dst_path = os.path.join( base_path, "user", "mdi_tests", ".work" )
+    #if os.path.isdir( dst_path ):
+    #    shutil.rmtree( dst_path )
+    #shutil.copytree( src_path, dst_path )
 
     # Create the docker environment
     docker_env = os.environ
@@ -98,13 +97,14 @@ def test_min( base_path ):
     down_out = format_return(down_tup[0])
     down_err = format_return(down_tup[1])
 
-    assert up_proc.returncode == 0
-    assert down_proc.returncode == 0
+    if up_proc.returncode != 0:
+        docker_error( up_tup, "Minimal MDI functionality test returned non-zero exit code." )
+
+    if down_proc.returncode != 0:
+        docker_error( down_tup, "Minimal MDI functionality test returned non-zero exit code on docker down." )
 
 def test_unsupported( base_path ):
-    # Get the base directory
-    #file_path = os.path.dirname(os.path.realpath(__file__))
-    #base_path = os.path.dirname( os.path.dirname( os.path.dirname( file_path ) ) )
+    # Get the path to the docker-compose file
     docker_path = get_compose_path( "tcp" )
 
     # Write the run script for MDI Mechanic
@@ -114,30 +114,43 @@ def test_unsupported( base_path ):
                      "# Exit if any command fails\n",
                      "\n",
                      "cd /MDI_Mechanic/mdimechanic/drivers\n",
-                     "python min_driver.py -command \'UNSUPPORTED\' -nreceive \'MDI_NAME_LENGTH\' -rtype \'MDI_CHAR\' -mdi \'-role DRIVER -name driver -method TCP -port 8021\'\n"]
+                     "python min_driver.py -command \'<UNSUPPORTED\' -nreceive \'MDI_NAME_LENGTH\' -rtype \'MDI_CHAR\' -mdi \'-role DRIVER -name driver -method TCP -port 8021\'\n"]
     os.makedirs(os.path.dirname(docker_file), exist_ok=True)
     with open(docker_file, 'w') as file:
         file.writelines( docker_lines )
 
     # Write the run script for the engine
-    docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
-    docker_lines = [ "#!/bin/bash\n",
-                     "\n",
-                     "# Exit if any command fails\n",
-                     "\n",
-                     "cd /repo/user/mdi_tests/.work\n",
-                     "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n",
-                     "./run.sh\n"]
-    os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    with open(docker_file, 'w') as file:
-        file.writelines( docker_lines )
+    #docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
+    #docker_lines = [ "#!/bin/bash\n",
+    #                 "\n",
+    #                 "# Exit if any command fails\n",
+    #                 "\n",
+    #                 "cd /repo/user/mdi_tests/.work\n",
+    #                 "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n",
+    #                 "./run.sh\n"]
+    #os.makedirs(os.path.dirname(docker_file), exist_ok=True)
+    #with open(docker_file, 'w') as file:
+    #    file.writelines( docker_lines )
+    # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+    script_lines = mdimechanic_yaml['engine_tests'][0]['script']
+    script = "#!/bin/bash\nset -e\n"
+    script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
+    for line in script_lines:
+        script += line + '\n'
 
+    # Write the script to run the test
+    script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
+    os.makedirs(os.path.dirname(script_path), exist_ok=True)
+    with open(script_path, "w") as script_file:
+        script_file.write( script )
+        
     # Prepare the working directory
-    src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
-    dst_path = os.path.join( base_path, "user", "mdi_tests", ".work" )
-    if os.path.isdir( dst_path ):
-        shutil.rmtree( dst_path )
-    shutil.copytree( src_path, dst_path )
+    #src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
+    #dst_path = os.path.join( base_path, "user", "mdi_tests", ".work" )
+    #if os.path.isdir( dst_path ):
+    #    shutil.rmtree( dst_path )
+    #shutil.copytree( src_path, dst_path )
 
     # Create the docker environment
     docker_env = os.environ
@@ -160,5 +173,11 @@ def test_unsupported( base_path ):
     down_out = format_return(down_tup[0])
     down_err = format_return(down_tup[1])
 
-    assert up_proc.returncode != 0
-    assert down_proc.returncode == 0
+    #assert up_proc.returncode != 0
+    #assert down_proc.returncode == 0
+
+    if up_proc.returncode == 0:
+        docker_error( up_tup, "Test for correct error functionality returned zero exit code." )
+
+    if down_proc.returncode != 0:
+        docker_error( down_tup, "Test for correct error functionality returned non-zero exit code on docker down." )

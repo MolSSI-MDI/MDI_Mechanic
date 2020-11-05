@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 import pickle
-from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path
+from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml
 
 # Paths to enter each identified node
 node_paths = { "@DEFAULT": "" }
@@ -93,16 +93,29 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
 
 
     # Create the script for the engine
-    docker_lines = [ "#!/bin/bash\n",
-                     "\n",
-                     "cd /repo\n",
-                     "cd user/mdi_tests/.work\n",
-                     "export MDI_OPTIONS=\'" + str(mdi_engine_options) + "\'\n",
-                     "./run.sh\n"]        
-    docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
-    os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    with open(docker_file, 'w') as file:
-        file.writelines( docker_lines )
+    #docker_lines = [ "#!/bin/bash\n",
+    #                 "\n",
+    #                 "cd /repo\n",
+    #                 "cd user/mdi_tests/.work\n",
+    #                 "export MDI_OPTIONS=\'" + str(mdi_engine_options) + "\'\n",
+    #                 "./run.sh\n"]        
+    #docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
+    #os.makedirs(os.path.dirname(docker_file), exist_ok=True)
+    #with open(docker_file, 'w') as file:
+    #    file.writelines( docker_lines )
+
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+    script_lines = mdimechanic_yaml['engine_tests'][0]['script']
+    script = "#!/bin/bash\nset -e\n"
+    script += "export MDI_OPTIONS=\'" + str(mdi_engine_options) + "\'\n"
+    for line in script_lines:
+        script += line + '\n'
+
+    # Write the script to run the test
+    script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
+    os.makedirs(os.path.dirname(script_path), exist_ok=True)
+    with open(script_path, "w") as script_file:
+        script_file.write( script )
 
 
 
