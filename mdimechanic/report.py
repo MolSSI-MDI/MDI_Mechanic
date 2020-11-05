@@ -71,7 +71,7 @@ def generate_report( base_path ):
         copyfile(src_location, dst_location)
 
         # Prepend the Travis badge to README.md
-        readme_path = os.path.join(base_path, "MDI_Mechanic", ".temp", "README.temp")
+        readme_path = os.path.join(base_path, ".mdimechanic", ".temp", "README.temp")
         badge_path = os.path.join(base_path, ".travis", "travis_badge.md")
         badge = None
         readme = None
@@ -80,7 +80,7 @@ def generate_report( base_path ):
         with open(readme_path, 'w') as modified: modified.write(badge + readme)
     
         # Copy README.temp over README.md
-        src_location = os.path.join(base_path, "MDI_Mechanic", ".temp", "README.temp")
+        src_location = os.path.join(base_path, ".mdimechanic", ".temp", "README.temp")
         dst_location = os.path.join(base_path, "README.md")
         copyfile(src_location, dst_location)
     except:

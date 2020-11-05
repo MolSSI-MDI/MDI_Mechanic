@@ -49,8 +49,8 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
 
     # Remove any leftover files from previous runs of min_driver.py
     #base_path = get_base_path()
-    dat_file = os.path.join( base_path, "MDI_Mechanic", ".temp", "min_driver.dat" )
-    err_file = os.path.join( base_path, "MDI_Mechanic", ".temp", "min_driver.err" )
+    dat_file = os.path.join( base_path, ".mdimechanic", ".temp", "min_driver.dat" )
+    err_file = os.path.join( base_path, ".mdimechanic", ".temp", "min_driver.err" )
     if os.path.exists( dat_file ):
         os.remove( dat_file )
     if os.path.exists( err_file ):
@@ -59,16 +59,14 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
     if use_mpi:
         mdi_driver_options = "-role DRIVER -name driver -method MPI"
         mdi_engine_options = "-role ENGINE -name TESTCODE -method MPI"
-        #docker_path = os.path.join( base_path, "MDI_Mechanic", "docker_mpi" )
         docker_path = get_compose_path( "mpi" )
     else:
         mdi_driver_options = "-role DRIVER -name driver -method TCP -port 8021"
         mdi_engine_options = "-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021"
-        #docker_path = os.path.join( base_path, "MDI_Mechanic", "docker" )
         docker_path = get_compose_path( "tcp" )
 
     # Create the script for MDI Mechanic
-    docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_mechanic.sh'
+    docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
     docker_lines = [ "#!/bin/bash\n",
                      "\n",
                      "# Exit if any command fails\n",
@@ -90,19 +88,6 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
     os.makedirs(os.path.dirname(docker_file), exist_ok=True)
     with open(docker_file, 'w') as file:
         file.writelines( docker_lines )
-
-
-    # Create the script for the engine
-    #docker_lines = [ "#!/bin/bash\n",
-    #                 "\n",
-    #                 "cd /repo\n",
-    #                 "cd user/mdi_tests/.work\n",
-    #                 "export MDI_OPTIONS=\'" + str(mdi_engine_options) + "\'\n",
-    #                 "./run.sh\n"]        
-    #docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
-    #os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    #with open(docker_file, 'w') as file:
-    #    file.writelines( docker_lines )
 
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests'][0]['script']
@@ -131,7 +116,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
 
         # Run "docker-compose exec"
-        exec_proc = subprocess.Popen( ["docker-compose", "exec", "-T", "--user", "mpiuser", "mdi_mechanic", "mpiexec", "-app", "/repo/MDI_Mechanic/docker/mpi/mdi_appfile"],
+        exec_proc = subprocess.Popen( ["docker-compose", "exec", "-T", "--user", "mpiuser", "mdi_mechanic", "mpiexec", "-app", "/MDI_Mechanic/mdimechanic/docker/mpi/mdi_appfile"],
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                       cwd=docker_path, env=docker_env )
         exec_tup = exec_proc.communicate()
@@ -217,8 +202,8 @@ def find_nodes( base_path ):
         
             # Read the name of the node
             node_name = None
-            dat_file = os.path.join( base_path, "MDI_Mechanic", ".temp", "min_driver.dat" )
-            err_file = os.path.join( base_path, "MDI_Mechanic", ".temp", "min_driver.err" )
+            dat_file = os.path.join( base_path, ".mdimechanic", ".temp", "min_driver.dat" )
+            err_file = os.path.join( base_path, ".mdimechanic", ".temp", "min_driver.err" )
             if os.path.isfile( dat_file ):
                 with open( dat_file, "r") as f:
                     node_name = f.read()
@@ -357,7 +342,7 @@ def node_graph( base_path ):
     # Save the graph data to a file
     graph_data = { 'nodes': nodes,
                    'edges': edges }
-    graph_file = os.path.join( base_path, "MDI_Mechanic", ".temp", "graph.pickle")
+    graph_file = os.path.join( base_path, ".mdimechanic", ".temp", "graph.pickle")
     os.makedirs(os.path.dirname(graph_file), exist_ok=True)
     with open(graph_file, 'wb') as handle:
         pickle.dump(graph_data, handle, protocol=min(pickle.HIGHEST_PROTOCOL, 4))
@@ -369,8 +354,8 @@ import pickle
 from graphviz import Digraph
 
 # Read the data required to make the graph
-#graph_file = os.path.join( \'/repo\', \'MDI_Mechanic\', \'.temp\', \'graph.pickle\')
-graph_file = \'/repo/MDI_Mechanic/.temp/graph.pickle\'
+#graph_file = os.path.join( \'/repo\', \'.mdimechanic\', \'.temp\', \'graph.pickle\')
+graph_file = \'/repo/.mdimechanic/.temp/graph.pickle\'
 
 with open(graph_file, 'rb') as handle:
     data = pickle.load(handle)
@@ -396,12 +381,6 @@ dot.render( graph_path )
 '''
 
     # Render the graph within a docker image, so that it is consistent across machines
-    #graph_proc = subprocess.Popen( ["docker", "run", "--rm",
-    #                               "-v", str(base_path) + ":/repo",
-    #                               "-it", "mdi_mechanic/mdi_mechanic",
-    #                               "bash", "-c",
-    #                               "cd /repo/MDI_Mechanic/scripts/utils && python graph.py"],
-    #                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     graph_proc = subprocess.Popen( ["docker", "run", "--rm",
                                     "-v", str(base_path) + ":/repo",
                                     "-v", str(package_path) + ":/MDI_Mechanic",
@@ -417,7 +396,6 @@ def analyze_nodes( base_path ):
     #package_path = get_package_path()
 
     # Read the README.md file
-    #readme_path = os.path.join(package_path,"MDI_Mechanic", "mdimechanic", "report" ,"README.base")
     readme_path = os.path.join(base_path, "README.md")
     with open(readme_path, "r") as file:
         readme = file.readlines()
@@ -435,7 +413,7 @@ def analyze_nodes( base_path ):
                 insert_list( readme, command_sec, iline )
 
     # Write the updates to the README file
-    temp_file = os.path.join( base_path, 'MDI_Mechanic', '.temp', 'README.temp')
+    temp_file = os.path.join( base_path, '.mdimechanic', '.temp', 'README.temp')
     os.makedirs(os.path.dirname(temp_file), exist_ok=True)
     with open(temp_file, 'w') as file:
         file.writelines( readme )

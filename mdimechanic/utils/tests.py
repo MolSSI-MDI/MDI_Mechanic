@@ -43,7 +43,7 @@ def test_min( base_path ):
     docker_path = get_compose_path( "tcp" )
 
     # Write the run script for MDI Mechanic
-    docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_mechanic.sh'
+    docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
     docker_lines = [ "#!/bin/bash\n",
                      "\n",
                      "# Exit if any command fails\n",
@@ -108,7 +108,7 @@ def test_unsupported( base_path ):
     docker_path = get_compose_path( "tcp" )
 
     # Write the run script for MDI Mechanic
-    docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_mechanic.sh'
+    docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
     docker_lines = [ "#!/bin/bash\n",
                      "\n",
                      "# Exit if any command fails\n",

@@ -14,7 +14,7 @@ def parse_mdi_standard( ):
 
     # This is only executed within Docker, so the paths should NOT use os.path.join
     standard_yaml_path = "/MDI_Mechanic/mdimechanic/mdi_standard.yaml"
-    standard_file = "/repo/MDI_Mechanic/.temp/standard.pickle"
+    standard_file = "/repo/.mdimechanic/.temp/standard.pickle"
 
     # Read the yaml file
     with open(standard_yaml_path, "r") as yaml_file:

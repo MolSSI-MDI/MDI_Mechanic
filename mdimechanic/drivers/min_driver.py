@@ -130,7 +130,7 @@ if nreceive is not None:
     recv_data = mdi.MDI_Recv(recv_num, recv_type, comm)
     
     # Write the received data to a file 
-    f = open("/repo/MDI_Mechanic/.temp/min_driver.dat", "w")
+    f = open("/repo/.mdimechanic/.temp/min_driver.dat", "w")
     f.write(str(recv_data))
     f.close()
 if nsend is not None:
@@ -153,7 +153,7 @@ assert initial_name == final_name
 
 # Some nodes might not support the "EXIT" command, so write a file indicating success now
 # Write the received data to a file
-f = open("/repo/MDI_Mechanic/.temp/min_driver.err", "w")
+f = open("/repo/.mdimechanic/.temp/min_driver.err", "w")
 f.write("0")
 f.close()
 

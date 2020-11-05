@@ -47,16 +47,9 @@ def docker_error( docker_tup, error_message ):
 
 def get_mdi_standard( base_path ):
     # Path to the file where the standard will be written
-    #base_path = get_base_path()
     package_path = get_package_path()
-    standard_file = os.path.join( base_path, "MDI_Mechanic", ".temp", "standard.pickle" )
+    standard_file = os.path.join( base_path, ".mdimechanic", ".temp", "standard.pickle" )
     
-    #parse_proc = subprocess.Popen( ["docker", "run", "--rm",
-    #                               "-v", str(base_path) + ":/repo",
-    #                               "-it", "mdi_mechanic/mdi_mechanic",
-    #                               "bash", "-c",
-    #                                "cd /repo/MDI_Mechanic/scripts/utils && python parse_standard.py"],
-    #                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     parse_proc = subprocess.Popen( ["docker", "run", "--rm",
                                     "-v", str(base_path) + ":/repo",
                                     "-v", str(package_path) + ":/MDI_Mechanic",
