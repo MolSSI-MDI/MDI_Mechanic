@@ -28,7 +28,6 @@ def generate_report( base_path ):
         down_tup = down_proc.communicate()
     except:
         raise Exception("Error: Unable to remove orphaned containers.")
-
     
     # Verify that the engine has been built / installed correctly
     try:
@@ -40,17 +39,7 @@ def generate_report( base_path ):
     except:
         raise Exception("Error: Unable to verify that the engine was built.")
 
-    # Verify that the engine test calculation can be run
-    try:
-        mtests.test_engine( base_path )
-        print("Success: Engine test(s) succeeded.")
-        src_location = os.path.join(base_path, "report", "badges", "-working-success.svg")
-        dst_location = os.path.join(base_path, "report", "dynamic_badges", "step_engine_test.svg")
-        copyfile(src_location, dst_location)
-    except:
-        raise Exception("Error: Engine test(s) failed.")
-
-    # Verify that the engine test calculation can be run
+    # Verify that the engine supports minimalistic MDI functionality
     try:
         mtests.test_min( base_path )
         print("Success: Engine passed minimal MDI functionality test.")

@@ -12,7 +12,7 @@ def test_validate( base_path ):
     # Read the yaml script for validating the engine build
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     validate_engine_lines = mdimechanic_yaml['docker']['validate_engine']
-    validate_engine_script = ''
+    validate_engine_script = "#!/bin/bash\nset -e\n"
     for line in validate_engine_lines:
         validate_engine_script += line + '\n'
 
@@ -33,36 +33,10 @@ def test_validate( base_path ):
     test_tup = test_proc.communicate()
     test_out = format_return(test_tup[0])
     test_err = format_return(test_tup[1])
+
     if test_proc.returncode != 0:
         docker_error( test_tup, "Build validation script returned non-zero value." )
 
-
-def test_engine( base_path ):
-    # Get the base directory
-    #file_path = os.path.dirname(os.path.realpath(__file__))
-    #base_path = os.path.dirname( os.path.dirname( os.path.dirname( file_path ) ) )
-    package_path = get_package_path()
-
-    # Prepare the working directory
-    src_path = os.path.join( base_path, "user", "engine_tests", "test1" )
-    dst_path = os.path.join( base_path, "user", "engine_tests", ".work" )
-    if os.path.isdir( dst_path ):
-        shutil.rmtree( dst_path )
-    shutil.copytree( src_path, dst_path )
-
-    # Run the test
-    test_proc = subprocess.Popen( ["docker", "run", "--rm",
-                                   "-v", str(base_path) + ":/repo",
-                                   "-v", str(package_path) + ":/MDI_Mechanic",
-                                   "-it", "mdi_mechanic/lammps",
-                                   "bash", "-c",
-                                   "cd /repo/user/engine_tests/.work && ./run.sh"],
-                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    test_tup = test_proc.communicate()
-    test_out = format_return(test_tup[0])
-    test_err = format_return(test_tup[1])
-    if test_proc.returncode != 0:
-        raise Exception("Engine test script returned non-zero value.")
 
 def test_min( base_path ):
     # Get the base directory

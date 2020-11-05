@@ -14,10 +14,9 @@ MDI Mechanic will automatically test each of these steps and indicate whether ea
 
 1. ![step1](report/dynamic_badges/step_config.svg) Configure repo
 2. ![step2](report/dynamic_badges/step_engine_build.svg) Build engine
-3. ![step3](report/dynamic_badges/step_engine_test.svg) Add engine test(s)
-4. ![step5](report/dynamic_badges/step_min_engine.svg) Implement minimalistic engine functionality
-5. ![step6](report/dynamic_badges/step_unsupported.svg) Error on unsupported commands
-6. ![step8](report/dynamic_badges/step_mdi_nodes.svg) Continue to add support for more MDI commands
+3. ![step5](report/dynamic_badges/step_min_engine.svg) Implement minimalistic MDI functionality
+4. ![step6](report/dynamic_badges/step_unsupported.svg) Error on unsupported commands
+5. ![step8](report/dynamic_badges/step_mdi_nodes.svg) Continue to add support for more MDI commands
 
 ## Nodes
 
