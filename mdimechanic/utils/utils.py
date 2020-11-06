@@ -53,7 +53,7 @@ def get_mdi_standard( base_path ):
     parse_proc = subprocess.Popen( ["docker", "run", "--rm",
                                     "-v", str(base_path) + ":/repo",
                                     "-v", str(package_path) + ":/MDI_Mechanic",
-                                    "-it", "mdi_mechanic/mdi_mechanic",
+                                    "mdi_mechanic/mdi_mechanic",
                                     "bash", "-c",
                                     "cd /MDI_Mechanic/mdimechanic/utils && python parse_standard.py"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)

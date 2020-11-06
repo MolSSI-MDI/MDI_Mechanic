@@ -384,7 +384,7 @@ dot.render( graph_path )
     graph_proc = subprocess.Popen( ["docker", "run", "--rm",
                                     "-v", str(base_path) + ":/repo",
                                     "-v", str(package_path) + ":/MDI_Mechanic",
-                                    "-it", "mdi_mechanic/mdi_mechanic",
+                                    "mdi_mechanic/mdi_mechanic",
                                     "bash", "-c",
                                     "cd /MDI_Mechanic/mdimechanic/utils && python -c \"" + graph_script + "\""],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
