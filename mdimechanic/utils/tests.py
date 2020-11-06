@@ -26,7 +26,7 @@ def test_validate( base_path ):
     test_proc = subprocess.Popen( ["docker", "run", "--rm",
                                    "-v", str(base_path) + ":/repo",
                                    "-v", str(package_path) + ":/MDI_Mechanic",
-                                   "-it", "mdi_mechanic/lammps",
+                                   "mdi_mechanic/lammps",
                                    "bash", "-c",
                                    "cd /repo && bash .mdimechanic/.temp/validate_engine.sh"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
