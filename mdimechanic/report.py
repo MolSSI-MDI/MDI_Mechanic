@@ -70,18 +70,19 @@ def generate_report( base_path ):
         dst_location = os.path.join(base_path, "report", "dynamic_badges", "step_mdi_nodes.svg")
         copyfile(src_location, dst_location)
 
-        # Prepend the Travis badge to README.md
-        readme_path = os.path.join(base_path, ".mdimechanic", ".temp", "README.temp")
-        badge_path = os.path.join(base_path, ".travis", "travis_badge.md")
-        badge = None
-        readme = None
-        with open(badge_path, 'r') as original: badge = original.read()
-        with open(readme_path, 'r') as original: readme = original.read()
-        with open(readme_path, 'w') as modified: modified.write(badge + readme)
-    
-        # Copy README.temp over README.md
-        src_location = os.path.join(base_path, ".mdimechanic", ".temp", "README.temp")
-        dst_location = os.path.join(base_path, "README.md")
-        copyfile(src_location, dst_location)
     except:
         raise Exception("Error: Unable to detect MDI nodes.")
+
+    # Prepend the Travis badge to README.md
+    readme_path = os.path.join(base_path, ".mdimechanic", ".temp", "README.temp")
+    badge_path = os.path.join(base_path, ".travis", "travis_badge.md")
+    badge = None
+    readme = None
+    with open(badge_path, 'r') as original: badge = original.read()
+    with open(readme_path, 'r') as original: readme = original.read()
+    with open(readme_path, 'w') as modified: modified.write(badge + readme)
+    
+    # Copy README.temp over README.md
+    src_location = os.path.join(base_path, ".mdimechanic", ".temp", "README.temp")
+    dst_location = os.path.join(base_path, "README.md")
+    copyfile(src_location, dst_location)
