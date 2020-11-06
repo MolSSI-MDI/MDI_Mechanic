@@ -75,7 +75,7 @@ def generate_report( base_path ):
 
     # Prepend the Travis badge to README.md
     readme_path = os.path.join(base_path, ".mdimechanic", ".temp", "README.temp")
-    badge_path = os.path.join(base_path, ".travis", "travis_badge.md")
+    badge_path = os.path.join(base_path, ".mdimechanic", "ci_badge.md")
     badge = None
     readme = None
     with open(badge_path, 'r') as original: badge = original.read()
