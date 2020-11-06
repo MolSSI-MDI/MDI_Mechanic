@@ -52,5 +52,7 @@ def install_all( base_path ):
         raise Exception("Unable to build the engine image")
 
     # Build the engine, within its Docker image
-    docker_string = "docker run --rm -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic -it mdi_mechanic/lammps bash -c \"cd /repo && bash .mdimechanic/.temp/build_engine.sh \""
-    os.system(docker_string)
+    docker_string = "docker run --rm -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic mdi_mechanic/lammps bash -c \"cd /repo && bash .mdimechanic/.temp/build_engine.sh \""
+    ret = os.system(docker_string)
+    if ret != 0:
+        raise Exception("Unable to build the engine")
