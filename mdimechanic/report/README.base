@@ -1,7 +1,3 @@
-# MDI Mechanic LAMMPS report
-
-This repo presents test results for the MDI interface implementation in the LAMMPS code.
-
 To view the README.md offline, it is suggested that you use grip (i.e., pip install grip).
 
 ## Overview of steps

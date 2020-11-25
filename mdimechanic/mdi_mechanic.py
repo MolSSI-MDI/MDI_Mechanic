@@ -23,11 +23,6 @@ def get_calling_path():
     
 
 
-def run( engine_name, *args):
-    base_path = get_calling_path()
-
-
-
 def command_report():
     print("Starting a report")
     report_dir = os.getcwd()

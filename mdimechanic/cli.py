@@ -24,8 +24,6 @@ def parse_args():
     return args
 
 def main(args=None):
-    print("IN MAIN!!!!")
-
     if args is None:
         args = parse_args()
 
@@ -34,6 +32,3 @@ def main(args=None):
         mech.command_build()
     elif command == "report":
         mech.command_report()
-
-    
-    mech.run( "lammps" )

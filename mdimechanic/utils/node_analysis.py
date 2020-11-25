@@ -14,10 +14,13 @@ node_edge_paths = [ ("@DEFAULT", "") ]
 use_mpi = False
 
 def docker_up( base_path, docker_path ):
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+
     # Create the docker environment
     docker_env = os.environ
     docker_env['MDIMECH_WORKDIR'] = base_path
     docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
+    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
 
     # Run "docker-compose up -d"
     up_proc = subprocess.Popen( ["docker-compose", "up", "-d"],
@@ -114,6 +117,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_env = os.environ
         docker_env['MDIMECH_WORKDIR'] = base_path
         docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
+        docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
 
         # Run "docker-compose exec"
         exec_proc = subprocess.Popen( ["docker-compose", "exec", "-T", "--user", "mpiuser", "mdi_mechanic", "mpiexec", "-app", "/MDI_Mechanic/mdimechanic/docker/mpi/mdi_appfile"],
@@ -133,6 +137,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_env = os.environ
         docker_env['MDIMECH_WORKDIR'] = base_path
         docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
+        docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
 
         # Run the docker container
         up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],

@@ -15,7 +15,7 @@ services:
       - engine
   engine:
     #build: ../../user
-    image: "mdi_mechanic/lammps"
+    image: "${MDIMECH_ENGINE_NAME}"
     volumes:
       - "${MDIMECH_WORKDIR}:/repo"
       - "${MDIMECH_PACKAGEDIR}:/MDI_Mechanic"
