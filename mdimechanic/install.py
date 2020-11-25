@@ -19,7 +19,7 @@ def install_all( base_path ):
 
     # Read the script to build the engine from the yaml file
     build_engine_lines = mdimechanic_yaml['docker']['build_engine']
-    build_engine_script = "#!/bin/bash\nset -e\n"
+    build_engine_script = "#!/bin/bash\nset -e\ncd /repo\n"
     for line in build_engine_lines:
         build_engine_script += line + '\n'
 

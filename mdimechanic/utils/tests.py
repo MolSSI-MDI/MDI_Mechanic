@@ -15,7 +15,7 @@ def test_validate( base_path ):
     # Read the yaml script for validating the engine build
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     validate_engine_lines = mdimechanic_yaml['docker']['validate_engine']
-    validate_engine_script = "#!/bin/bash\nset -e\n"
+    validate_engine_script = "#!/bin/bash\nset -e\ncd /repo\n"
     for line in validate_engine_lines:
         validate_engine_script += line + '\n'
 
@@ -61,7 +61,7 @@ def test_min( base_path ):
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests'][0]['script']
-    script = "#!/bin/bash\nset -e\n"
+    script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
     for line in script_lines:
         script += line + '\n'
@@ -138,7 +138,7 @@ def test_unsupported( base_path ):
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests'][0]['script']
-    script = "#!/bin/bash\nset -e\n"
+    script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
     for line in script_lines:
         script += line + '\n'

@@ -94,7 +94,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
 
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests'][0]['script']
-    script = "#!/bin/bash\nset -e\n"
+    script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'" + str(mdi_engine_options) + "\'\n"
     for line in script_lines:
         script += line + '\n'
