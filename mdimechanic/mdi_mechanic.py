@@ -82,11 +82,8 @@ def ci():
     if mdimech_ci is not None:
         if mdimech_ci == 'true':
             is_ci = True
-    print("is_ci: " + str(mdimech_ci))
     if not is_ci:
         raise Exception("The ci function should only be used within the context of a Continuous Integration test.")
-
-    print("Running CI")
 
     base_path = os.getcwd()
 
