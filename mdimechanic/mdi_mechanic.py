@@ -88,7 +88,7 @@ def ci():
     os.system("git pull")
 
     # Set the CI Badge
-    badge_path = os.path.join( base_path, ',mdimechanic', 'ci_badge.md' )
+    badge_path = os.path.join( base_path, '.mdimechanic', 'ci_badge.md' )
     badge_text = "[![Build Status](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/workflows/CI/badge.svg)](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/)"
     with open( badge_path, 'w' ) as badge_file:
         badge_file.write( badge_text )
