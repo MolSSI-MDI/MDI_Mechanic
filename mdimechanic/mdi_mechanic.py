@@ -116,7 +116,7 @@ def ci():
     github_server_url = os.environ['GITHUB_SERVER_URL']
     github_repository = os.environ['GITHUB_REPOSITORY']
     #badge_text = "[![Build Status](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/workflows/CI/badge.svg)](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/)"
-    badge_text = "[![Build Status](" + str(github_server_url) + "/" + str(github_repository) + "/workflows/CI/badge.svg)](" + str(github_server_url) + "/" + str(github_repository) + "/actions/)"
+    badge_text = "[![Build Status](" + str(github_server_url) + "/" + str(github_repository) + "/workflows/CI/badge.svg)](" + str(github_server_url) + "/" + str(github_repository) + "/actions/)\n"
     with open( badge_path, 'w' ) as badge_file:
         badge_file.write( badge_text )
 
