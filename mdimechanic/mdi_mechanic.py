@@ -10,6 +10,7 @@ import os
 import traceback
 from . import report
 from . import install
+from .utils import utils as ut
 
 def get_calling_path():
     # Get the name of the file that called the calling function
@@ -71,6 +72,26 @@ def ci():
         raise Exception("The ci function should only be used within the context of a Continuous Integration test.")
 
     print("Running CI")
+
+    base_path = ut.get_base_path()
+
+    # Configure Git
+    os.system("git config --global user.email 'action@github.com'")
+    os.system("git config --global user.email 'action@github.com'")
+    os.system("git config pull.ff only")
+
+    # Confirm that the build can push
+    os.system("git remote -v")
+    os.system("git push -v > /dev/null 2>&1")
+
+    # Pull, in case this build was restarted
+    os.system("git pull")
+
+    # Set the CI Badge
+    badge_path = os.path.join( base_path, ',mdimechanic', 'ci_badge.md' )
+    badge_text = "[![Build Status](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/workflows/CI/badge.svg)](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/)"
+    with open( badge_path, 'w' ) as badge_file:
+        badge_file.write( badge_text )
 
 if __name__ == "__main__":
     # Do something if this file is invoked on its own
