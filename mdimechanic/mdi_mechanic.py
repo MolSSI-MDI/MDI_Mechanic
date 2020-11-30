@@ -73,7 +73,7 @@ def ci():
 
     print("Running CI")
 
-    base_path = ut.get_base_path()
+    base_path = os.getcwd()
 
     # Configure Git
     os.system("git config --global user.email 'action@github.com'")
