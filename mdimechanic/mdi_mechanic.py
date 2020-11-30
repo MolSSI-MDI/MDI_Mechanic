@@ -60,6 +60,21 @@ def canvas(with_attribution=True):
         quote += "\n\t- Adapted from Henry David Thoreau"
     return quote
 
+
+
+def ci_push():
+    # Note: These commands should be permitted to have non-zero exits
+    os.system("git add ./.mdimechanic/ci_badge.md")
+    os.system("git add ./README.md")
+    os.system("git add ./report")
+    os.system("git commit -m 'CI commit [ci skip]'")
+
+    ret = os.system("git push -v > /dev/null 2>&1")
+    if ret != 0:
+        raise Exception("Unable to push changes to report")
+
+
+
 def ci():
     # This function should only be run in the context of a Continuous Integration test
     mdimech_ci = os.getenv('MDIMECH_CI')
@@ -76,22 +91,57 @@ def ci():
     base_path = os.getcwd()
 
     # Configure Git
-    os.system("git config --global user.email 'action@github.com'")
-    os.system("git config --global user.email 'action@github.com'")
-    os.system("git config pull.ff only")
+    ret = os.system("git config --global user.email 'action@github.com'")
+    if ret != 0:
+        raise Exception("Unable to configure Git")
+    ret = os.system("git config --global user.email 'action@github.com'")
+    if ret != 0:
+        raise Exception("Unable to configure Git")
+    ret = os.system("git config pull.ff only")
+    if ret != 0:
+        raise Exception("Unable to configure Git")
 
     # Confirm that the build can push
     os.system("git remote -v")
+    if ret != 0:
+        raise Exception("Unable to configure Git")
     os.system("git push -v > /dev/null 2>&1")
+    if ret != 0:
+        raise Exception("Unable to configure Git")
 
     # Pull, in case this build was restarted
     os.system("git pull")
+    if ret != 0:
+        raise Exception("Unable to configure Git")
 
     # Set the CI Badge
     badge_path = os.path.join( base_path, '.mdimechanic', 'ci_badge.md' )
     badge_text = "[![Build Status](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/workflows/CI/badge.svg)](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/)"
     with open( badge_path, 'w' ) as badge_file:
         badge_file.write( badge_text )
+
+    # Build MDI Mechanic and the Engine
+    ret = os.system("mdimechanic build")
+    if ret != 0:
+        #os.environ["MDI_REPORT_STATUS"] = "1"
+        os.system("cat ./.mdimechanic/ci_badge.md ./README.md > temp && mv temp README.md")
+        #os.system("bash ./.mdimechanic/push_changes.sh")
+        ci_push()
+        raise Exception("Unable to build MDI Mechanic and the Engine")
+
+    # Generate the report
+    ret = os.system("mdimechanic report")
+    if ret != 0:
+        #os.environ["MDI_REPORT_STATUS"] = "1"
+        os.system("cat ./.mdimechanic/ci_badge.md ./README.md > temp && mv temp README.md")
+        #os.system("bash ./.mdimechanic/push_changes.sh")
+        ci_push()
+        raise Exception("Unable to build MDI Mechanic and the Engine")
+
+    # Push any changes to the report
+    #os.environ["MDI_REPORT_STATUS"] = "0"
+    #os.system("bash ./.mdimechanic/push_changes.sh")
+    ci_push()
 
 if __name__ == "__main__":
     # Do something if this file is invoked on its own
