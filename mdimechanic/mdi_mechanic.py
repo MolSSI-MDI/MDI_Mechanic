@@ -59,6 +59,18 @@ def canvas(with_attribution=True):
         quote += "\n\t- Adapted from Henry David Thoreau"
     return quote
 
+def ci():
+    # This function should only be run in the context of a Continuous Integration test
+    mdimech_ci = os.getenv('MDIMECH_CI')
+    is_ci = False
+    if mdimech_ci is not None:
+        if mdimech_ci == 'true':
+            is_ci = True
+    print("is_ci: " + str(mdimech_ci))
+    if not is_ci:
+        raise Exception("The ci function should only be used within the context of a Continuous Integration test.")
+
+    print("Running CI")
 
 if __name__ == "__main__":
     # Do something if this file is invoked on its own
