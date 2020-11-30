@@ -94,7 +94,7 @@ def ci():
     ret = os.system("git config --global user.email 'action@github.com'")
     if ret != 0:
         raise Exception("Unable to configure Git")
-    ret = os.system("git config --global user.email 'action@github.com'")
+    ret = os.system("git config --global user.name 'GitHub Action'")
     if ret != 0:
         raise Exception("Unable to configure Git")
     ret = os.system("git config pull.ff only")
@@ -102,15 +102,15 @@ def ci():
         raise Exception("Unable to configure Git")
 
     # Confirm that the build can push
-    os.system("git remote -v")
+    ret = os.system("git remote -v")
     if ret != 0:
         raise Exception("Unable to configure Git")
-    os.system("git push -v > /dev/null 2>&1")
+    ret = os.system("git push -v > /dev/null 2>&1")
     if ret != 0:
         raise Exception("Unable to configure Git")
 
     # Pull, in case this build was restarted
-    os.system("git pull")
+    ret = os.system("git pull")
     if ret != 0:
         raise Exception("Unable to configure Git")
 
