@@ -102,9 +102,10 @@ def ci():
     ret = os.system("git remote -v")
     if ret != 0:
         raise Exception("Unable to check Git remotes")
-    ret = os.system("git push -v > /dev/null 2>&1")
+    #ret = os.system("git push -v > /dev/null 2>&1")
+    ret = os.system("git push -v")
     if ret != 0:
-        raise Exception("Unable test git push")
+        raise Exception("Unable to test git push")
 
     # Pull, in case this build was restarted
     ret = os.system("git pull")
