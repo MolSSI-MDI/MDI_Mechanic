@@ -7,6 +7,7 @@ Handles the primary functions
 
 ####
 import os
+import shutil
 import traceback
 from . import report
 from . import install
@@ -35,6 +36,31 @@ def command_build():
     print("Starting the installation")
     report_dir = os.getcwd()
     install.install_all( report_dir )
+
+
+
+def command_startproject( args ):
+    print("Starting a new MDI project")
+    project_type = args.pop("projecttype")
+
+    base_path = os.getcwd()
+    package_path = ut.get_package_path()
+
+    if project_type == "enginereport":
+        print("Starting an engine report project")
+
+        yml_path = os.path.join( base_path, "mdimechanic.yml" )
+        docker_path = os.path.join( base_path, "docker" )
+        if os.path.exists( yml_path ) or os.path.exists( docker_path ):
+            raise Exception("This already appears to be an MDI project")
+
+        yml_source = os.path.join( package_path, "mdimechanic", "projects", "enginereport", "mdimechanic.yml" )
+        docker_source = os.path.join( package_path, "mdimechanic", "projects", "enginereport", "docker" )
+        shutil.copyfile( yml_source, yml_path )
+        shutil.copytree( docker_source, docker_path )
+
+    else:
+        raise Exception("Unrecognized project type.")
 
 
 

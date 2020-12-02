@@ -14,7 +14,14 @@ def parse_args():
     build = subparsers.add_parser("build", help="Build containers for MDI_Mechanic and the engine.")
     #build.add_argument("location", type=str, help="The location where the engine is located.")
 
+    startproject = subparsers.add_parser("startproject", help="Start a new MDI project.")
+    startproject.add_argument("--enginereport", dest='projecttype', action='store_const',
+                              const="enginereport", default=None,
+                              help="Start an engine report project.")
+
     report = subparsers.add_parser("report", help="Create a report for the engine.")
+
+    
 
     args = vars(parser.parse_args())
     if args["command"] is None:
@@ -32,3 +39,5 @@ def main(args=None):
         mech.command_build()
     elif command == "report":
         mech.command_report()
+    elif command == "startproject":
+        mech.command_startproject( args )
