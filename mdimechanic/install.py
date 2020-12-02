@@ -1,4 +1,5 @@
 import os
+import subprocess
 from .utils import utils as ut
 
 def install_all( base_path ):
@@ -45,6 +46,18 @@ def install_all( base_path ):
 
     # Switch to the base directory
     os.chdir(base_path)
+
+    # Generate ssh keys within the MDI Mechanic image
+    ssh_proc = subprocess.Popen( ["docker", "run", "--rm",
+                                    "-v", str(base_path) + ":/repo",
+                                    "-v", str(package_path) + ":/MDI_Mechanic",
+                                    "mdi_mechanic/mdi_mechanic",
+                                    "bash", "-c",
+                                    "cd /MDI_Mechanic/mdimechanic/docker/ssh && ssh-keygen -t rsa -b 4096 -C \"\" -f id_rsa.mpi -N \'\'"],
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ssh_tup = ssh_proc.communicate()
+    if ssh_proc.returncode != 0:
+        ut.docker_error( ssh_tup, "Error during ssh key generation." )
 
     # Build the engine image
     build_command = "docker build -t " + mdimechanic_yaml['docker']['image_name'] + " docker"
