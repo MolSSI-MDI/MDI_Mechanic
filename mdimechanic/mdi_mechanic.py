@@ -90,26 +90,26 @@ def ci():
     # Configure Git
     ret = os.system("git config --global user.email 'action@github.com'")
     if ret != 0:
-        raise Exception("Unable to configure Git")
+        raise Exception("Unable to configure Git user email")
     ret = os.system("git config --global user.name 'GitHub Action'")
     if ret != 0:
-        raise Exception("Unable to configure Git")
+        raise Exception("Unable to configure Git user name")
     ret = os.system("git config pull.ff only")
     if ret != 0:
-        raise Exception("Unable to configure Git")
+        raise Exception("Unable to configure Git pull")
 
     # Confirm that the build can push
     ret = os.system("git remote -v")
     if ret != 0:
-        raise Exception("Unable to configure Git")
+        raise Exception("Unable to check Git remotes")
     ret = os.system("git push -v > /dev/null 2>&1")
     if ret != 0:
-        raise Exception("Unable to configure Git")
+        raise Exception("Unable test git push")
 
     # Pull, in case this build was restarted
     ret = os.system("git pull")
     if ret != 0:
-        raise Exception("Unable to configure Git")
+        raise Exception("Unable to perform a Git pull")
 
     # Set the CI Badge
     badge_path = os.path.join( base_path, '.mdimechanic', 'ci_badge.md' )
