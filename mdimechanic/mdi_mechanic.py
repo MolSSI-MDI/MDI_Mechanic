@@ -98,19 +98,18 @@ def ci():
     if ret != 0:
         raise Exception("Unable to configure Git pull")
 
-    # Confirm that the build can push
-    ret = os.system("git remote -v")
-    if ret != 0:
-        raise Exception("Unable to check Git remotes")
-    #ret = os.system("git push -v > /dev/null 2>&1")
-    ret = os.system("git push -v")
-    if ret != 0:
-        raise Exception("Unable to test git push")
-
     # Pull, in case this build was restarted
     ret = os.system("git pull")
     if ret != 0:
         raise Exception("Unable to perform a Git pull")
+
+    # Confirm that the build can push
+    ret = os.system("git remote -v")
+    if ret != 0:
+        raise Exception("Unable to check Git remotes")
+    ret = os.system("git push -v > /dev/null 2>&1")
+    if ret != 0:
+        raise Exception("Unable to test git push")
 
     # Set the CI Badge
     badge_path = os.path.join( base_path, '.mdimechanic', 'ci_badge.md' )
