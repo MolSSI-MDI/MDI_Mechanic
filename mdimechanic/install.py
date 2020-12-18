@@ -53,7 +53,8 @@ def install_all( base_path ):
                                     "-v", str(package_path) + ":/MDI_Mechanic",
                                     "mdi_mechanic/mdi_mechanic",
                                     "bash", "-c",
-                                    "cd /MDI_Mechanic/mdimechanic/docker/ssh && ssh-keygen -t rsa -b 4096 -C \"\" -f id_rsa.mpi -N \'\'"],
+#                                    "cd /MDI_Mechanic/mdimechanic/docker/ssh && ssh-keygen -t rsa -b 4096 -C \"\" -f id_rsa.mpi -N \'\'"],
+                                  "cd /MDI_Mechanic/mdimechanic/docker/ssh && ../../utils/generate_ssh_keys.sh"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     ssh_tup = ssh_proc.communicate()
     if ssh_proc.returncode != 0:
