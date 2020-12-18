@@ -47,17 +47,22 @@ def command_startproject( args ):
     package_path = ut.get_package_path()
 
     if project_type == "enginereport":
+        project_path = os.path.join( package_path, "mdimechanic", "projects", "enginereport" )
+
         print("Starting an engine report project")
 
         yml_path = os.path.join( base_path, "mdimechanic.yml" )
         docker_path = os.path.join( base_path, "docker" )
-        if os.path.exists( yml_path ) or os.path.exists( docker_path ):
+        workflow_path = os.path.join( base_path, ".github" )
+        if os.path.exists( yml_path ) or os.path.exists( docker_path ) or os.path.exists( workflow_path ):
             raise Exception("This already appears to be an MDI project")
 
-        yml_source = os.path.join( package_path, "mdimechanic", "projects", "enginereport", "mdimechanic.yml" )
-        docker_source = os.path.join( package_path, "mdimechanic", "projects", "enginereport", "docker" )
+        yml_source = os.path.join( project_path, "mdimechanic.yml" )
+        docker_source = os.path.join( project_path, "docker" )
+        workflow_source = os.path.join( project_path, ".github" )
         shutil.copyfile( yml_source, yml_path )
         shutil.copytree( docker_source, docker_path )
+        shutil.copytree( workflow_source, workflow_path )
 
     else:
         raise Exception("Unrecognized project type.")
