@@ -141,10 +141,3 @@ mdi_key.pub
 # MDI Mechanic work directory
 .mdimechanic/.temp
 docker/.temp
-
-# LAMMPS output files
-dump.force
-dump.lammpstrj
-dump.xyz
-lammps.out
-log.lammps
