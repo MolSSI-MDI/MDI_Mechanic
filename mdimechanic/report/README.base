@@ -1,5 +1,7 @@
 To view the README.md offline, it is suggested that you use grip (i.e., pip install grip).
 
+[yaml]: <> ( prepend )
+
 ## Overview of steps
 
 The following lists the basic steps required to run a MDI calculation.
