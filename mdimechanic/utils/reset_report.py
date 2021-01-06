@@ -45,14 +45,11 @@ def reset_report( base_path ):
     for iline in range(len(body)):
         line = body[iline]
         sline = line.split()
-        print("SLINE: " + str(sline))
         if len(sline) > 3:
             if sline[0] == '[yaml]:':
-                print("YAML")
                 instruction = sline[3]
                 if instruction == "prepend":
                     prepend_iline = iline
-                    print("prepending")
     if 'report' in mdimechanic_yaml:
         if 'prepend' in mdimechanic_yaml['report']:
             prepend_data = mdimechanic_yaml['report']['prepend']
