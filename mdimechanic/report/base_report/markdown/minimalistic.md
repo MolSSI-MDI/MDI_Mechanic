@@ -55,8 +55,18 @@ In the case of the above example build process, the compiled static library file
 
 ### Step 2: Support User Input of the MDI Options
 
-Your code must 
+Your code should allow users to set certain MDI parameters at runtime.
+Typically, end-users should be able to set these parameters through the use of a `-mdi` command-line option when your engine is launched.
+In this case, the user should be able to launch your code by doing something along the lines of:
+```Bash
+engine_exectable -mdi "-name engine -role ENGINE -method TCP -hostname localhost -port 8021"
+```
+The details of how you read this command-line option are beyond the scope of this tutorial, but should conform to whatever existing method you use to read command-line options.
+The argument to the `-mdi` command-line option should be represented as a `char*` in C++, a `CHARACTER` array in Fortran, and a `String` in Python.
+Subsequent steps in this tutorial will assume that you have named the corresponding variable `mdi_options`.
 
+We understand that some codes prefer to eschew command-line options where possible.
+If it is preferable not to introduce support for a `-mdi` command-line option, ensure that there is some other mechanism for the user to provide the MDI parameters at runtime.
 
 ### Step 3: Initialize the MDI Library
 
@@ -85,6 +95,12 @@ MPI_Comm world_comm;
 /* Pointer to world_comm */
 MPI_Comm *world_comm_ptr = &world_comm;
 
+/* MDI communicator used to communicate with the driver */
+MDI_Comm mdi_comm = MDI_COMM_NULL;
+
+/* Rank of this process in the MDI-created intra-communicator */
+int myrank = 0;
+
 /* Function to initialize both MPI and MDI */
 initialize(char *mdi_options, MPI_Comm *world_comm_ptr) {
 
@@ -98,6 +114,14 @@ initialize(char *mdi_options, MPI_Comm *world_comm_ptr) {
   /* MDI should be initialized immediately after MPI */
   MDI_Init(mdi_options, world_comm_ptr);
   /* Following this point, world_comm should be used whenever you would otherwise have used MPI_COMM_WORLD */
+
+  /* Get the rank of this process, within the MDI-created intra-communicator */
+  MPI_Comm_rank(world_comm, my_rank);
+
+  /* Accept a connection from an external driver */
+  if ( my_rank == 0 ) {
+    MDI_Accept_Communicator(&mdi_comm);
+  }
 }
 ```
 
@@ -106,7 +130,7 @@ After implementing the call to `MDI_Init()`, you should recompile the code to co
 ##### Fortran
 
 ```Fortran
-SUBROUTINE initialize ( mdi_options, world_comm )
+SUBROUTINE initialize ( mdi_options, world_comm, my_rank, mdi_comm )
     USE mpi,               ONLY : MPI_COMM_WORLD
     USE mdi,               ONLY : MDI_Init, MDI_COMM_NULL
     !
@@ -120,6 +144,14 @@ SUBROUTINE initialize ( mdi_options, world_comm )
     ! Afterwards, you should ALWAYS use this variable instead of MPI_COMM_WORLD
     !
     INTEGER, INTENT(INOUT) :: world_comm
+    !
+    ! Rank of this process within the MDI-created intra-communicator
+    !
+    INTEGER, INTENT(OUT) :: my_rank
+    !
+    ! MDI communicator, obtained from MDI_Accept_Communicator
+    !
+    INTEGER, INTENT(OUT) :: mdi_comm
     !
     ! Error flag used in MDI calls
     !
@@ -142,6 +174,16 @@ SUBROUTINE initialize ( mdi_options, world_comm )
     !
     ! Following this point, world_comm should be used whenever you would otherwise have used MPI_COMM_WORLD
     !
+    !
+    ! Get the rank of this process, within the MDI-created intra-communicator
+    !
+    CALL MPI_Comm_rank(world_comm, my_rank, ierr)
+    !
+    ! Accept a connection from an external driver
+    !
+    IF ( my_rank .eq. 0 ) THEN
+        CALL MDI_Accept_Communicator( mdi_comm, ierr )
+    END IF
 END SUBROUTINE initialize
 ```
 
@@ -177,6 +219,16 @@ mdi.MDI_Init(mdi_options, world_comm)
 # Set world_comm to the correct intra-code MPI communicator
 world_comm = MDI_Get_Intra_Code_MPI_Comm()
 # Following this point, world_comm should be used whenever you would otherwise have used MPI.COMM_WORLD
+
+# Get the MPI rank of this process
+if world_comm is not None:
+    my_rank = world_comm.Get_rank()
+else:
+    my_rank = 0
+
+# Accept a connection from an external driver
+if my_rank == 0:
+    mdi_comm = MDI_Accept_Communicator()
 ```
 
 ### Step 4: Support Basic MDI Communication
@@ -196,27 +248,81 @@ For the purpose of this tutorial, we will implement all of this functionality in
 Examples of a minimalistic `run_mdi()` function are provided below, in C++, Fortran, and Python.
 You can simply copy the function into your codebase and call `run_mdi()` at your MDI node.
 
+##### C++
+
+Call this function as `run_mdi("@DEFAULT", my_rank, world_comm, mdi_comm)`.
+
+```C++
+#include <mpi>
+#include "mdi.h"
+
+run_mdi(char *node_name, int my_rank, MPI_Comm world_comm, MDI_Comm mdi_comm)
+
+  /* Exit flag for the main MDI loop */
+  bool exit_flag = false;
+
+  /* MDI command from the driver */
+  command = new char[MDI_COMMAND_LENGTH];
+
+  /* Main MDI loop */
+  while (not exit_flag) {
+    /* Receive a command from the driver */
+    if ( my_rank == 0 ) {
+      MDI_Recv_Command(command, mdi_comm);
+    }
+    MPI_Bcast(command, MDI_COMMAND_LENGTH, MPI_CHAR, 0, world_comm);
+
+    /* Confirm that this command is actually supported at this node */
+    int command_supported = 0;
+    MDI_Check_Command_Exists(node_name, command, MDI_COMM_NULL, &command_supported);
+    if ( command_supported != 1 ) {
+      /* Note: Replace this with whatever error handling method your code uses */
+      MPI_Abort(world_comm, 1);
+    }
+
+    /* Respond to the received command */
+    if ( strcmp(command, "EXIT") == 0 ) {
+      exit_flag = true;
+    }
+    else {
+      /* The received command is not recognized by this engine, so exit
+         Note: Replace this with whatever error handling method your code uses */
+      MPI_Abort(world_comm, 1);
+    }
+
+  // Free any memory allocations
+  delete [] command;
+}
+```
+
 ##### Fortran
 
+Call this function as `CALL run_mdi("@DEFAULT", my_rank, world_comm, mdi_comm)`.
+
 ```Fortran
-SUBROUTINE run_mdi( world_comm, my_rank )
+SUBROUTINE run_mdi( node_name, my_rank, world_comm, mdi_comm )
     USE mdi,              ONLY : MDI_Send, MDI_Recv, MDI_Recv_Command, &
                                  MDI_Accept_Communicator, &
 				 MDI_CHAR, MDI_DOUBLE, MDI_INT, &
-				 MDI_COMMAND_LENGTH
+				 MDI_COMMAND_LENGTH, MDI_NAME_LENGTH, &
+				 MDI_COMM_NULL
     !
-    ! MDI-created intra-communicator
+    ! MDI command from the driver
     !
-    INTEGER, INTENT(IN) :: world_comm
+    CHARACTER :: node_name(MDI_NAME_LENGTH)
     !
     ! Rank of this process in world_comm
     ! If you are not using MPI, you can set my_rank = 0
     !
     INTEGER, INTENT(IN) :: my_rank
     !
+    ! MDI-created intra-communicator
+    !
+    INTEGER, INTENT(IN) :: world_comm
+    !
     ! MDI communicator, obtained from MDI_Accept_Communicator
     !
-    INTEGER :: mdi_comm
+    INTEGER, INTENT(IN) :: mdi_comm
     !
     ! MDI command from the driver
     !
@@ -226,20 +332,20 @@ SUBROUTINE run_mdi( world_comm, my_rank )
     !
     INTEGER :: ierr
     !
+    ! Flag to indicate whether a received command is supported
+    !
+    INTEGER :: command_supported
+    !
     ! Allocate the command array
     !
     ALLOCATE( command(MDI_COMMAND_LENGTH) )
     !
-    ! Accept a connection from an external driver
-    ! Note: This should only be called once, even if run_mdi is called multiple times
-    !
-    IF ( my_rank .eq. 0 ) THEN
-        CALL MDI_Accept_Communicator( mdi_comm, ierr )
-    END IF
-    !
-    ! Main MDI Loop
+    ! Main MDI loop
     !
     mdi_loop: DO
+        !
+        ! Receive a command from the driver
+        !
         IF ( my_rank .eq. 0 ) THEN
             CALL MDI_Recv_Command( command, mdi_comm, ierr )
             WRITE(*,*) "MDI Engine received a command: ",trim(command)
@@ -250,31 +356,131 @@ SUBROUTINE run_mdi( world_comm, my_rank )
         !
         CALL MPI_Bcast( header, MDI_COMMAND_LENGTH, MPI_CHAR, 0, world_comm )
         !
-        ! Determine which command this is
+        ! Confirm that this command is actually supported at this node
+        !
+        command_supported = 0;
+        CALL MDI_Check_Command_Exists(node_name, command, MDI_COMM_NULL, command_supported, ierr);
+        IF ( command_supported .ne. 1 ) THEN
+            ! Note: Replace this with whatever error handling method your code uses
+            CALL MPI_Abort(world_comm, 1);
+        END IF
+        !
+        ! Respond to the received command
         !
         SELECT CASE ( trim( command ) )
 	CASE( "EXIT" )
 	    RETURN
         CASE DEFAULT
             !
-            ! The received command is not recognized by this engine
+            ! The received command is not recognized by this engine, so exit
+            ! Note: Replace this with whatever error handling method your code uses
             !
             WRITE(*,*) "MDI Engine received unrecognized command: ",trim(command)
-            CALL EXIT(1)
+            CALL MPI_Abort(world_comm, 1);
         END SELECT
     END DO mdi_loop
 END SUBROUTINE run_mdi
 ```
 
+##### Python
+
+```Python
+import mdi
+
+def run_mdi(node_name, my_rank, world_comm, mdi_comm):
+
+    exit_flag = False
+
+    # Main MDI loop
+    while not exit_flag:
+        # Receive a command from the driver
+        if self.my_rank == 0:
+            command = mdi.MDI_Recv_Command(self.comm)
+        else:
+            command = None
+
+        # Broadcast the command to all ranks, if using MPI
+        if world_comm is not None:
+            command = world_comm.bcast(command, root=0)
+
+        # Confirm that this command is actually supported at this node
+        if not mdi.MDI_Check_Node_Exists(node_name, command):
+            raise Exception('MDI Engine received unsupported command: ' + str(command))
+
+        # Respond to the received command
+        if command == "EXIT":
+            exit_flag = True
+        else:
+            # The received command is not recognized by this engine, so exit
+            # Note: Replace this with whatever error handling method your code uses
+            raise Exception('MDI Engine received unrecognized command: ' + str(command))
+```
 
 
 ### Step 5: Register the Node and Commands
 
+MDI requires you to "register" a list of all nodes and commands your engine supports.
+This allows you, as an engine developer, to inform any drivers of what your code can do.
+MDI provides two functions that allow you to do this: `MDI_Register_Node()` and `MDI_Register_Command()`.
+The engine we have developed thus far in the tutorial only supports a single node, and that node only supports a single command.
+As a result, we need to call `MDI_Register_Node()` once to register the `@DEFAULT` node and call `MDI_Register_Command()` once to register the `EXIT` command.
+
+Fortunately, this is a very simple process.
+The only argument to the `MDI_Register_Node()` function is the name of the node, `@DEFAULT`.
+The `MDI_Register_Command()` function accepts two arguments: the name of the node, and the name of the command that we are registering at that node, `EXIT`.
+In time, you may add support for additional commands at the default node, making additional calls to `MDI_Register_Command()` for each newly supported command.
+If you add additional nodes, each node will have its own list of registered commands, which may be different from the list of commands supported at the `@DEFAULT` node.
+
+For now, place the following code immediately after your engine's call to `MDI_Init()`.
+It is important that it be called prior to the call to `MDI_Accept_Communicator()`.
+
+##### C++
+
+```C++
+  /* Register all supported commands and nodes */
+  MDI_Register_Node("@DEFAULT");
+  MDI_Register_Command("@DEFAULT", "EXIT");
+```
+
+##### Fortran
+
+```Fortran
+    ! Register all supported commands and nodes
+    CALL MDI_Register_Node("@DEFAULT", ierr);
+    CALL MDI_Register_Command("@DEFAULT", "EXIT", ierr);
+```
+
+##### Python
+
+```Python
+    # Register all supported commands and nodes
+    mdi.MDI_Register_Node("@DEFAULT")
+    mdi.MDI_Register_Command("@DEFAULT", "EXIT")
+```
+
 ### Step 6: Add Support for Additional Commands
 
+It may not look like much yet, but you have now established an basic MDI interface!
+If you generate a new report by typing `mdimechanic report` at the command line, MDI Mechanic should confirm that your engine passes all of the "Basic Functionality Tests".
+If your engine is still failing that test, you should return to the previous steps of this tutorial to determine what went wrong.
+
+Assuming that your MDI interface is functioning as expected, you can now begin the process of implementing support for more commands.
+Whenever you want to add support for a new command, you will need to do the following:
+-# Add code to the "Main MDI loop" in `run_mdi()` that will respond appropriately to the new command.
+-# Add a call to `MDI_Register_Command()` to register support for that command.
+
+Examine the commands specified by the [MDI Standard](https://molssi-mdi.github.io/MDI_Library/html/mdi_standard.html), and implement support for the ones that seem relevant for your engine.
+Each command in the MDI Standard describes exactly how the engine is expected to respond.
+Often, the engine is expected to either send or receive information to/from the driver.
+This is accomplished using the `MDI_Send()` and `MDI_Recv()` functions, respectively.
+
 If you are using MPI, you should be aware that all MDI-based communication must take place through `rank 0`.
-Only `rank 0` should call `MPI_
+Only `rank 0` should call `MPI_Send()`, `MPI_Recv()`, and `MPI_Recv_Command()`.
 Depending on how you have distributed data structures across ranks, you may need to do `MPI_Gather()` or similar operations to collect the data onto `rank 0` before calling `MDI_Send()`.
 Likewise, you may need to do `MPI_Scatter()` or similar operations to correctly distribute data after calling `MDI_Recv()`.
 
 ### Step 7: Add Support for Additional Nodes
+
+Whenever you add a new node, you must also add a call to `MDI_Register_Node()` to register support for that node.
+Commands are registered separately for each node, so any commands that are supported at the new node must be registered for it.
+For example, if you implement five nodes, and each of them supports the `EXIT` command, you will need to call the `MDI_Register_Command()` function five times, each time with a different node as the first argument and with `EXIT` as the second argument.
