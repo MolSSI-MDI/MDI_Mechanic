@@ -11,8 +11,10 @@ docker:
 
   validate_engine:
     - echo "Insert code that will confirm that your code has been built successfully"
+    - exit 1
 
 engine_tests:
   # Provide at least one example input that can be used to test your code's MDI functionality
   - script:
       - echo "Insert commands to run an example calculation here"
+      - exit 1
