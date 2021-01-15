@@ -141,3 +141,9 @@ mdi_key.pub
 # MDI Mechanic work directory
 .mdimechanic/.temp
 docker/.temp
+
+# Build directory
+/build
+
+# Source directory
+/source

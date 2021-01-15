@@ -3,9 +3,11 @@
 This test verifies that the engine is capable of basic communication with an external engine.
 
 
+
 ## Failure Resolution
 
 If this test fails, ensure that you have followed each of the steps outlined below.
+
 
 
 ### Step 1: Make the MDI Library Available to the Engine
@@ -460,7 +462,7 @@ It is important that it be called prior to the call to `MDI_Accept_Communicator(
 
 ### Step 6: Add Support for Additional Commands
 
-It may not look like much yet, but you have now established an basic MDI interface!
+It may not look like much yet, but you have now established a basic MDI interface!
 If you generate a new report by typing `mdimechanic report` at the command line, MDI Mechanic should confirm that your engine passes all of the "Basic Functionality Tests".
 If your engine is still failing that test, you should return to the previous steps of this tutorial to determine what went wrong.
 
