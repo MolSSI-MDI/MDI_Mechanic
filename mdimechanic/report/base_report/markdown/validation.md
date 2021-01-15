@@ -104,7 +104,7 @@ If your code is written in a compiled language, this can be as simple as a check
     - ENGINE_EXECUTABLE_PATH="build/<engine_exectuable_name>"
     - |
       if test -f "$ENGINE_EXECUTABLE_PATH"; then
-	echo "$ENGINE_EXECUTABLE_PATH exists"
+        echo "$ENGINE_EXECUTABLE_PATH exists"
       else
         echo "Could not find engine executable: $ENGINE_EXECUTABLE_PATH"
         exit 1
@@ -126,7 +126,7 @@ If not, review the error messages from `mdimechanic report` to try to work out w
 ### Step 7: Provide an example input
 
 When you run `mdimechanic report`, MDI Mechanic tries to run a series of tests to determine whether and to what extent your code supports MDI.
-To do this, MDI Mechanic attempts to launch your code, establish a connection between it and numerous test drivers, and then reports the results.
+To do this, MDI Mechanic attempts to launch your code, establish a connection between it and numerous test drivers, and then report the results.
 At this point in the tutorial, MDI Mechanic has no information about how to launch your code, so it can't run these tests.
 
 We will now supply MDI Mechanic with everything it needs to run a calculation with your code.
@@ -143,10 +143,15 @@ engine_tests:
 ```
 Replace the script in the `script` field here so that, when executed, it will launch a calculation using your code.
 This likely means that you will need to add one or more input files to your MDI-report repository, which we recommend placing in a `tests` subdirectory.
-Your `mdimechanic.yml` is likely to end up looking something like this:
+Your `mdimechanic.yml` might end up looking something like this:
 ```YAML
 engine_tests:
   - script:
       - cd tests/test1
       - ../../${ENGINE_EXECUTABLE_PATH} -in test.inp
 ```
+
+The exact nature of the test calculation doesn't matter very much.
+It should be a fast calculation, since it will be run many times.
+The calculation might involve a simulation of a Lennard-Jones fluid, calculation of the single-point energy of a water molecule, or some other small computatation.
+The most important thing about the test script is that **it must return a non-zero exit value if the calculation fails**.
