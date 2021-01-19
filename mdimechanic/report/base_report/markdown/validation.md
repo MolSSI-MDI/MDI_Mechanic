@@ -1,5 +1,18 @@
 # Validate Engine Test
 
+
+If you just want a quick tl;dr summary of the minimum steps involved in implementing an MDI interface, see the following:
+-# If your engine is written in a compiled language, build and link your engine against MDI just like any other library.  If it is written in Python, just import the MDI Library.
+-# Add a way for end-users of your engine to send runtime options to the MDI Library, preferably through a `-mdi` command-line option.
+-# Call `MDI_Init()` and `MDI_Accept_Communicator()` as early as possible in your engine.
+-# Add some server-like code that allows your engine to listen for commands via MDI and respond to them appropriately.
+-# If your engine uses the Message Passing Interface (MPI), be aware that the MDI Library provides a replacement for MPI_COMM_WORLD, and that some MDI functions should only be called by `rank 0`.
+
+
+
+
+
+
 This test verifies that the engine is capable of basic communication with an external engine.
 
 
@@ -153,5 +166,5 @@ engine_tests:
 
 The exact nature of the test calculation doesn't matter very much.
 It should be a fast calculation, since it will be run many times.
-The calculation might involve a simulation of a Lennard-Jones fluid, calculation of the single-point energy of a water molecule, or some other small computatation.
-The most important thing about the test script is that **it must return a non-zero exit value if the calculation fails**.
+The calculation might involve a simulation of a Lennard-Jones fluid, evaluation of the single-point energy of a water molecule, or some other small computatation.
+The most important thing about the test script is that **it must return a non-zero exit value if your engine exits due to an error**.
