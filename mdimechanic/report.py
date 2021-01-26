@@ -78,7 +78,10 @@ def generate_report( base_path ):
     badge_path = os.path.join(base_path, ".mdimechanic", "ci_badge.md")
     badge = None
     readme = None
-    with open(badge_path, 'r') as original: badge = original.read()
+    try:
+        with open(badge_path, 'r') as original: badge = original.read()
+    except FileNotFoundError:
+        badge = ""
     with open(readme_path, 'r') as original: readme = original.read()
     with open(readme_path, 'w') as modified: modified.write(badge + readme)
     
