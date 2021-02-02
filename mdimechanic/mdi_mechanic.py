@@ -11,6 +11,7 @@ import shutil
 import traceback
 from . import report
 from . import install
+from .utils import tests as mtests
 from .utils import utils as ut
 
 def get_calling_path():
@@ -176,6 +177,18 @@ def ci():
     #os.environ["MDI_REPORT_STATUS"] = "0"
     #os.system("bash ./.mdimechanic/push_changes.sh")
     ci_push()
+
+def command_rundriver( args ):
+    report_dir = os.getcwd()
+    print("Running an MDI test driver")
+    driver_name = args.pop("driver_name")
+
+    # Test the driver
+    try:
+        mtests.test_driver( driver_name, report_dir )
+        print("Success: The driver ran to completion.")
+    except:
+        raise Exception("Error: Unable to verify that the engine was built.")
 
 if __name__ == "__main__":
     # Do something if this file is invoked on its own

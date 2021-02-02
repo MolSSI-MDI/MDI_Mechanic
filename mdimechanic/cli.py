@@ -21,7 +21,11 @@ def parse_args():
 
     report = subparsers.add_parser("report", help="Create a report for the engine.")
 
-    
+    rundriver = subparsers.add_parser("rundriver", help="Run a calculation with a test driver.")
+    rundriver.add_argument("--name", dest='driver_name',
+                           type=str,
+                           default=None,
+                           help="Name of the test driver to run.")
 
     args = vars(parser.parse_args())
     if args["command"] is None:
@@ -41,3 +45,5 @@ def main(args=None):
         mech.command_report()
     elif command == "startproject":
         mech.command_startproject( args )
+    elif command == "rundriver":
+        mech.command_rundriver( args )
