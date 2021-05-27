@@ -46,7 +46,9 @@ setup(
 
     # Additional entries you may want simply uncomment the lines you want and fill in the data
     url='https://github.com/MolSSI-MDI/MDI_Mechanic',  # Website
-    # install_requires=[],              # Required packages, pulls from pip if needed; do not use for Conda deployment
+    install_requires=[
+        'PyYAML',
+    ],              # Required packages, pulls from pip if needed; do not use for Conda deployment
     # platforms=['Linux',
     #            'Mac OS-X',
     #            'Unix',
