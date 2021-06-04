@@ -7,12 +7,13 @@ Welcome to MDI_Mechanic's documentation!
 =========================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    getting_started
    api
 
+A tool for testing and developing MDI-enabled projects.
 
 
 Indices and tables
