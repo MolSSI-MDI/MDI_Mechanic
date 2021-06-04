@@ -13,6 +13,7 @@ In order to simplify the process of implementing, testing, and analyzing the cap
   .. code-block:: shell
 
     pip install mdimechanic
+
 * Install Docker and launch Docker Desktop, if applicable. You don't need to create a DockerHub account. You also don't need to know much about using Docker, as MDI Mechanic will handle those details for you.
 
 Note that although the above are requirements of this tutorial, none of them are required of end-users running your code.
@@ -109,7 +110,7 @@ After providing a ``validate_engine`` script, run::
 
 in the top-level directory of your MPI-report repository. This will perform a series of tests to confirm whether your engine supports MDI correctly. The first of these tests simply runs the ``validate_engine`` script. Since we haven't even started implementing MDI functionality in your engine yet, it is expected that MDI Mechanic will report errors shortly after starting. After ``mdimechanic report`` stops (most likely throwing an error), you should find that there is a new ``README``.md file in your MDI-report repository. This file contains the full report from MDI Mechanic. To properly view the file, you can either commit the file and push it to GitHub, where it can be viewed at your MDI-report repository's GitHub page, or you can install an offline markdown viewer (such as ``grip``) to view it. There isn't much to see now, but hopefully you can see that there is a green ``working`` badge next to the step labeled "The engine builds successfully". If not, review the error messages from ``mdimechanic report`` to try to work out what when wrong, before moving on to the next step.
 
-Step 7: Provide an example input
+Step 6: Provide an example input
 --------------------------------
 
 When you run ``mdimechanic report``, MDI Mechanic tries to run a series of tests to determine whether and to what extent your code supports MDI. To do this, MDI Mechanic attempts to launch your code, establish a connection between it and numerous test drivers, and then report the results. At this point in the tutorial, MDI Mechanic has no information about how to launch your code, so it can't run these tests.
