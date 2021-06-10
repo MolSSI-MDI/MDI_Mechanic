@@ -57,6 +57,10 @@ commands:
     recv:
       datatype: MDI_DOUBLE
       count: 1
+  ">ENERGY":
+    send:
+      datatype: MDI_DOUBLE
+      count: 1
   "EXIT":
   ">FORCES":
     send:
@@ -70,6 +74,7 @@ commands:
     recv:
       datatype: MDI_DOUBLE
       count: 3 * <NATOMS
+  "@INIT_MC":
   "@INIT_MD":
   "@INIT_OPTG":
   "<KE":

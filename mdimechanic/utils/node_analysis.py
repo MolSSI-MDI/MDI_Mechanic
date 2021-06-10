@@ -93,7 +93,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         file.writelines( docker_lines )
 
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
-    script_lines = mdimechanic_yaml['engine_tests'][0]['script']
+    script_lines = mdimechanic_yaml['engine_tests']['script']
     script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'" + str(mdi_engine_options) + "\'\n"
     for line in script_lines:
@@ -166,6 +166,8 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
 def find_nodes( base_path ):
     global node_paths
     global node_edge_paths
+
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     
     # List of all node commands in the MDI Standard
     command_list = []
@@ -196,8 +198,15 @@ def find_nodes( base_path ):
     for node in node_paths.keys():
         original_nodes.append(node)
     ordered_nodes = sorted( original_nodes )
+
+    # Determine the maximum distance to search for new nodes
+    node_search_distance = 5
+    if 'engine_tests' in mdimechanic_yaml:
+        if 'node_search_distance' in mdimechanic_yaml['engine_tests']:
+            node_search_distance = mdimechanic_yaml['engine_tests']['node_search_distance']
+
     for node in ordered_nodes:
-        for ii in range(20):
+        for ii in range(node_search_distance):
             new_path = node_paths[node]
             for jj in range(ii+1):
                 new_path += " @"
@@ -238,6 +247,8 @@ def find_nodes( base_path ):
 
 def write_supported_commands( base_path ):
     global node_paths
+
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     
     # List of all commands in the MDI Standard
     command_list = []
@@ -293,7 +304,19 @@ def write_supported_commands( base_path ):
             command_with_path = node_paths[node] + " " + command
             padded_string = str(node).ljust(20, '.')
             print(padded_string, end=" ")
-            command_works = test_command( base_path, command_with_path, nrecv, recv_type, nsend, send_type )
+
+            # If there is a list of commands to test, only test the listed commands:
+            run_test = True
+            if 'engine_tests' in mdimechanic_yaml:
+                if 'tested_commands' in mdimechanic_yaml['engine_tests']:
+                    if not command in mdimechanic_yaml['engine_tests']['tested_commands']:
+                        run_test = False
+
+            if run_test:
+                command_works = test_command( base_path, command_with_path, nrecv, recv_type, nsend, send_type )
+            else:
+                command_works = False
+                print("SKIPPED", flush=True)
         
             if command_works:
                 # Display a bright green box

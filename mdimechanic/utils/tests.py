@@ -60,7 +60,7 @@ def test_min( base_path ):
     # Write the run script for the engine
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
-    script_lines = mdimechanic_yaml['engine_tests'][0]['script']
+    script_lines = mdimechanic_yaml['engine_tests']['script']
     script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
     for line in script_lines:
@@ -137,7 +137,7 @@ def test_unsupported( base_path ):
     #    file.writelines( docker_lines )
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
-    script_lines = mdimechanic_yaml['engine_tests'][0]['script']
+    script_lines = mdimechanic_yaml['engine_tests']['script']
     script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
     for line in script_lines:
@@ -209,7 +209,7 @@ def test_driver( driver_name, base_path ):
 
     # Write the run script for the engine
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
-    script_lines = mdimechanic_yaml['engine_tests'][0]['script']
+    script_lines = mdimechanic_yaml['engine_tests']['script']
     script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
     for line in script_lines:
