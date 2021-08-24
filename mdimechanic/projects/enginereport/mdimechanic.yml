@@ -15,6 +15,6 @@ docker:
 
 engine_tests:
   # Provide at least one example input that can be used to test your code's MDI functionality
-  - script:
-      - echo "Insert commands to run an example calculation here"
-      - exit 1
+  script:
+    - echo "Insert commands to run an example calculation here"
+    - exit 1
