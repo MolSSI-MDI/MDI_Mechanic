@@ -11,6 +11,7 @@ import shutil
 import traceback
 from . import report
 from . import install
+from . import runcmd
 from .utils import tests as mtests
 from .utils import utils as ut
 
@@ -178,9 +179,24 @@ def ci():
     #os.system("bash ./.mdimechanic/push_changes.sh")
     ci_push()
 
+def command_run( args ):
+    run_dir = os.getcwd()
+    print("Running a custom calculation with MDI Mechanic.")
+    script_name = args.pop("script_name")
+
+    if script_name is None:
+        raise Exception("Error: --name argument was not provided.")
+
+    # Test the driver
+    try:
+        runcmd.run( script_name, run_dir )
+        print("Success: The driver ran to completion.")
+    except:
+        raise Exception("Error: Unable to verify that the engine was built.")
+
 def command_rundriver( args ):
     report_dir = os.getcwd()
-    print("Running an MDI test driver")
+    print("Running an MDI test driver.")
     driver_name = args.pop("driver_name")
 
     # Test the driver
