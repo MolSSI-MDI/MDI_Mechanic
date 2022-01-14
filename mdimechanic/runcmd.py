@@ -28,7 +28,10 @@ def run( script_name, base_path ):
     docker_env = os.environ
     docker_env['MDIMECH_WORKDIR'] = base_path
     docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
-    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
+    if 'image' in mdimechanic_yaml['run_scripts'][script_name]['containers']['container1']:
+        docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['run_scripts'][script_name]['containers']['container1']['image']
+    else:
+        raise Exception("No image was provided for container \"container1\".  Please provide the image name in mdimechanic.yml.")
 
     # Run "docker-compose up"
     up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "engine", "--abort-on-container-exit"],

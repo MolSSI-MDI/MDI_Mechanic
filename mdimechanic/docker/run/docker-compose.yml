@@ -12,8 +12,6 @@ services:
       mdinet:
         aliases:
           - enginehost
-    depends_on:
-      - mdi_mechanic
 
 networks:
   mdinet:
