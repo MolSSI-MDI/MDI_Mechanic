@@ -34,7 +34,7 @@ def run( script_name, base_path ):
         raise Exception("No image was provided for container \"container1\".  Please provide the image name in mdimechanic.yml.")
 
     # Run "docker-compose up"
-    up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "engine", "--abort-on-container-exit"],
+    up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "engine", "--abort-on-container-exit", "-u", "mdimechanic"],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                 cwd=docker_path, env=docker_env )
     up_tup = up_proc.communicate()
