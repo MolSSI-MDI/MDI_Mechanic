@@ -15,8 +15,9 @@ def install_all( base_path ):
     # Write the script to build the image
     image_script_path = os.path.join( base_path, "docker", ".temp", "build_image.sh" )
     os.makedirs(os.path.dirname(image_script_path), exist_ok=True)
-    with open(image_script_path, "w") as script_file:
-        script_file.write( build_image_script )
+    with open(image_script_path, "wb") as script_file:
+        # Write as bytes, to ensure line returns work correctly on Windows
+        script_file.write( bytes(build_image_script, "UTF-8") )
 
     # Read the script to build the engine from the yaml file
     build_engine_lines = mdimechanic_yaml['docker']['build_engine']
@@ -27,8 +28,9 @@ def install_all( base_path ):
     # Write the script to build the engine
     engine_script_path = os.path.join( base_path, ".mdimechanic", ".temp", "build_engine.sh" )
     os.makedirs(os.path.dirname(engine_script_path), exist_ok=True)
-    with open(engine_script_path, "w") as script_file:
-        script_file.write( build_engine_script )
+    with open(engine_script_path, "wb") as script_file:
+        # Write as bytes, to ensure line returns work correctly on Windows
+        script_file.write( bytes(build_engine_script, "UTF-8") )
 
     # Switch to the package directory
     package_path = ut.get_package_path()
@@ -53,8 +55,8 @@ def install_all( base_path ):
                                     "-v", str(package_path) + ":/MDI_Mechanic",
                                     "mdi_mechanic/mdi_mechanic",
                                     "bash", "-c",
-#                                    "cd /MDI_Mechanic/mdimechanic/docker/ssh && ssh-keygen -t rsa -b 4096 -C \"\" -f id_rsa.mpi -N \'\'"],
-                                  "cd /MDI_Mechanic/mdimechanic/docker/ssh && ../../utils/generate_ssh_keys.sh"],
+#                                    "echo Hello"],
+                                    "cd /MDI_Mechanic/mdimechanic/docker/ssh && bash ../../utils/generate_ssh_keys.sh"],
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     ssh_tup = ssh_proc.communicate()
     if ssh_proc.returncode != 0:
