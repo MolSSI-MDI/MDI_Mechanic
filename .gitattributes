@@ -1,0 +1,2 @@
+mdimechanic/docker/base/docker-entrypoint.sh text eol=lf
+mdimechanic/utils/generate_ssh_keys.sh text eol=lf
