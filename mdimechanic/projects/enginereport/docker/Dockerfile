@@ -8,5 +8,4 @@ FROM mdi/base
 COPY .temp/build_image.sh .
 
 # run the build script
-RUN chmod +x ./build_image.sh && \
-    ./build_image.sh
+RUN bash build_image.sh
