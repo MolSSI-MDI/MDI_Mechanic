@@ -21,8 +21,8 @@ def run( script_name, base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "w") as script_file:
-        script_file.write( script )
+    with open(script_path, "wb") as script_file:
+        script_file.write( bytes(script, "UTF-8") )
 
     # Create the docker environment
     docker_env = os.environ

@@ -22,8 +22,8 @@ def test_validate( base_path ):
     # Write the script to validate the engine build
     validate_script_path = os.path.join( base_path, ".mdimechanic", ".temp", "validate_engine.sh" )
     os.makedirs(os.path.dirname(validate_script_path), exist_ok=True)
-    with open(validate_script_path, "w") as script_file:
-        script_file.write( validate_engine_script )
+    with open(validate_script_path, "wb") as script_file:
+        script_file.write( bytes(validate_engine_script, "UTF-8") )
 
     # Run the test
     test_proc = subprocess.Popen( ["docker", "run", "--rm",
@@ -69,8 +69,8 @@ def test_min( base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "w") as script_file:
-        script_file.write( script )
+    with open(script_path, "wb") as script_file:
+        script_file.write( bytes(script, "UTF-8") )
 
     # Prepare the working directory
     #src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
@@ -146,8 +146,8 @@ def test_unsupported( base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "w") as script_file:
-        script_file.write( script )
+    with open(script_path, "wb") as script_file:
+        script_file.write( bytes(script, "UTF-8") )
         
     # Prepare the working directory
     #src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
@@ -218,8 +218,8 @@ def test_driver( driver_name, base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "w") as script_file:
-        script_file.write( script )
+    with open(script_path, "wb") as script_file:
+        script_file.write( bytes(script, "UTF-8") )
 
     # Create the docker environment
     docker_env = os.environ
