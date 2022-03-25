@@ -12,6 +12,7 @@ import traceback
 from . import report
 from . import install
 from . import runcmd
+from . import interactive
 from .utils import tests as mtests
 from .utils import utils as ut
 
@@ -192,7 +193,7 @@ def command_run( args ):
         runcmd.run( script_name, run_dir )
         print("Success: The driver ran to completion.")
     except:
-        raise Exception("Error: Unable to verify that the engine was built.")
+        raise Exception("Error: The script did not complete successfully.")
 
 def command_rundriver( args ):
     report_dir = os.getcwd()
@@ -204,7 +205,17 @@ def command_rundriver( args ):
         mtests.test_driver( driver_name, report_dir )
         print("Success: The driver ran to completion.")
     except:
-        raise Exception("Error: Unable to verify that the engine was built.")
+        raise Exception("Error: The test driver did not complete successfully.")
+
+def command_interactive( ):
+    run_dir = os.getcwd()
+
+    try:
+        interactive.start( run_dir )
+        print("Success: Interactive session completed successfully.")
+    except:
+        raise Exception("Error: Interactive session did not complete successfully.")
+
 
 if __name__ == "__main__":
     # Do something if this file is invoked on its own

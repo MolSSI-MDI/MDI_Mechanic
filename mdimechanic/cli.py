@@ -33,6 +33,8 @@ def parse_args():
                            default=None,
                            help="Name of the test driver to run.")
 
+    interactive = subparsers.add_parser("interactive", help="Start an interactive session within a container.")
+
     args = vars(parser.parse_args())
     if args["command"] is None:
         parser.print_help(sys.stderr)
@@ -55,3 +57,5 @@ def main(args=None):
         mech.command_run( args )
     elif command == "rundriver":
         mech.command_rundriver( args )
+    elif command == "interactive":
+        mech.command_interactive()
