@@ -1,7 +1,7 @@
 import os
 import subprocess
 import shutil
-from .utils.utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml
+from .utils.utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml, write_as_bytes
 
 
 def run( script_name, base_path ):
@@ -21,8 +21,7 @@ def run( script_name, base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "wb") as script_file:
-        script_file.write( bytes(script, "UTF-8") )
+    write_as_bytes( script, script_path )
 
     # Create the docker environment
     docker_env = os.environ

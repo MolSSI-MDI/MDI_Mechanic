@@ -18,8 +18,9 @@ docker_lines = [ "#!/bin/bash\n",
                  "cd repo/user/dummy\n",
                  "python min_driver.py -mdi \'-role DRIVER -name driver -method TCP -port 8021\'\n"]
 os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-with open(docker_file, 'w') as file:
-    file.writelines( docker_lines )
+#with open(docker_file, 'w') as file:
+#    file.writelines( docker_lines )
+ut.writelines_as_bytes( docker_lines, docker_file )
 
 working_dir = str(base_path) + "/user/mdi_tests/test1"
 os.system("rm -rf " + str(base_path) + "/user/mdi_tests/.work")

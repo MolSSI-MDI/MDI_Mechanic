@@ -25,9 +25,7 @@ python min_driver.py -mdi \'-role DRIVER -name driver -method MPI\'
 '''
 
 os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-with open(docker_file, 'wb') as file:
-    #file.writelines( docker_lines )
-    script_file.write( bytes(script, "UTF-8") )
+ut.write_as_bytes( script, docker_file )
 
 docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
 #docker_lines = [ "#!/bin/bash\n",
@@ -44,9 +42,7 @@ export MDI_OPTIONS='-role ENGINE -name TESTCODE -method MPI'
 ./run.sh
 '''
 os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-with open(docker_file, 'wb') as file:
-    #file.writelines( docker_lines )
-    script_file.write( bytes(script, "UTF-8") )
+ut.write_as_bytes( script, docker_file )
 
 # Copy the files
 working_dir = str(base_path) + "/user/mdi_tests/test1"

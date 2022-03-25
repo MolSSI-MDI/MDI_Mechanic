@@ -70,3 +70,16 @@ def get_mdimechanic_yaml( base_path ):
     with open(yaml_path, "r") as yaml_file:
         mdimechanic_yaml = yaml.load(yaml_file, Loader=yaml.FullLoader)
     return mdimechanic_yaml
+
+def write_as_bytes( text, file ):
+    # Write as bytes, to ensure line returns work correctly on Windows
+    with open(file, "wb") as opened_file:
+        opened_file.write( bytes(text, "UTF-8") )
+
+def writelines_as_bytes( lines, file ):
+    # Write as bytes, to ensure line returns work correctly on Windows
+    text = ""
+    for line in lines:
+        text += line
+    with open(file, "wb") as opened_file:
+        opened_file.write( bytes(text, "UTF-8") )

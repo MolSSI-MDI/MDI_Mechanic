@@ -1,6 +1,6 @@
 import os
 import shutil
-from .utils import get_package_path, get_mdimechanic_yaml, insert_list
+from .utils import get_package_path, get_mdimechanic_yaml, insert_list, writelines_as_bytes
 
 def reset_report( base_path ):
     # Path to this file
@@ -63,8 +63,9 @@ def reset_report( base_path ):
     readme_data.extend( body )
 
     # Write the README.md file
-    with open( dst_location, 'w' ) as new_file:
-        new_file.writelines( readme_data )
+    #with open( dst_location, 'w' ) as new_file:
+    #    new_file.writelines( readme_data )
+    writelines_as_bytes( readme_data, dst_location )
 
 if __name__ == "__main__":
     reset_report()

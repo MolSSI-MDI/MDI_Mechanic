@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 import pickle
-from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml
+from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml, writelines_as_bytes, write_as_bytes
 
 # Paths to enter each identified node
 node_paths = { "@DEFAULT": "" }
@@ -89,8 +89,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_lines.append( "   -stype \'" + str(send_type) + "\' \\\n" )
     docker_lines.append( "   -mdi \"" + str(mdi_driver_options) + "\"\n" )
     os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    with open(docker_file, 'w') as file:
-        file.writelines( docker_lines )
+    writelines_as_bytes( docker_lines, docker_file )
 
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests']['script']
@@ -102,8 +101,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "w") as script_file:
-        script_file.write( script )
+    write_as_bytes( script, script_path )
 
 
 
@@ -443,8 +441,7 @@ def analyze_nodes( base_path ):
     # Write the updates to the README file
     temp_file = os.path.join( base_path, '.mdimechanic', '.temp', 'README.temp')
     os.makedirs(os.path.dirname(temp_file), exist_ok=True)
-    with open(temp_file, 'w') as file:
-        file.writelines( readme )
+    writelines_as_bytes( readme, temp_file )
 
     # Create the node graph
     node_graph( base_path )

@@ -1,7 +1,7 @@
 import os
 import subprocess
 import shutil
-from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml
+from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml, writelines_as_bytes, write_as_bytes
 
 
 
@@ -22,8 +22,7 @@ def test_validate( base_path ):
     # Write the script to validate the engine build
     validate_script_path = os.path.join( base_path, ".mdimechanic", ".temp", "validate_engine.sh" )
     os.makedirs(os.path.dirname(validate_script_path), exist_ok=True)
-    with open(validate_script_path, "wb") as script_file:
-        script_file.write( bytes(validate_engine_script, "UTF-8") )
+    write_as_bytes( validate_engine_script, validate_script_path )
 
     # Run the test
     test_proc = subprocess.Popen( ["docker", "run", "--rm",
@@ -54,8 +53,7 @@ def test_min( base_path ):
                      "cd /MDI_Mechanic/mdimechanic/drivers\n",
                      "python min_driver.py -command \'<NAME\' -nreceive \'MDI_NAME_LENGTH\' -rtype \'MDI_CHAR\' -mdi \'-role DRIVER -name driver -method TCP -port 8021\'\n"]
     os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    with open(docker_file, 'w') as file:
-        file.writelines( docker_lines )
+    writelines_as_bytes( docker_lines, docker_file )
 
     # Write the run script for the engine
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
@@ -69,8 +67,7 @@ def test_min( base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "wb") as script_file:
-        script_file.write( bytes(script, "UTF-8") )
+    write_as_bytes( script, script_path )
 
     # Prepare the working directory
     #src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
@@ -120,8 +117,7 @@ def test_unsupported( base_path ):
                      "cd /MDI_Mechanic/mdimechanic/drivers\n",
                      "python min_driver.py -command \'<UNSUPPORTED\' -nreceive \'MDI_NAME_LENGTH\' -rtype \'MDI_CHAR\' -mdi \'-role DRIVER -name driver -method TCP -port 8021\'\n"]
     os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    with open(docker_file, 'w') as file:
-        file.writelines( docker_lines )
+    writelines_as_bytes( docker_lines, docker_file )
 
     # Write the run script for the engine
     #docker_file = str(base_path) + '/MDI_Mechanic/.temp/docker_mdi_engine.sh'
@@ -133,8 +129,6 @@ def test_unsupported( base_path ):
     #                 "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n",
     #                 "./run.sh\n"]
     #os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    #with open(docker_file, 'w') as file:
-    #    file.writelines( docker_lines )
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests']['script']
@@ -146,8 +140,7 @@ def test_unsupported( base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "wb") as script_file:
-        script_file.write( bytes(script, "UTF-8") )
+    write_as_bytes( script, script_path )
         
     # Prepare the working directory
     #src_path = os.path.join( base_path, "user", "mdi_tests", "test1" )
@@ -204,8 +197,7 @@ def test_driver( driver_name, base_path ):
     for line in driver_script:
         docker_lines.append( line + '\n' )
     os.makedirs(os.path.dirname(docker_file), exist_ok=True)
-    with open(docker_file, 'w') as file:
-        file.writelines( docker_lines )
+    writelines_as_bytes( docker_lines, docker_file )
 
     # Write the run script for the engine
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
@@ -218,8 +210,7 @@ def test_driver( driver_name, base_path ):
     # Write the script to run the test
     script_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_engine.sh" )
     os.makedirs(os.path.dirname(script_path), exist_ok=True)
-    with open(script_path, "wb") as script_file:
-        script_file.write( bytes(script, "UTF-8") )
+    write_as_bytes( script, script_path )
 
     # Create the docker environment
     docker_env = os.environ
