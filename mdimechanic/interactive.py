@@ -7,6 +7,9 @@ from .utils.utils import format_return, insert_list, docker_error, get_mdi_stand
 def start( base_path ):
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
 
+    # Name of the image to run
+    image_name = mdimechanic_yaml['docker']['image_name']
+
     # Find the location of .gitconfig file
     gitconfig_line = ""
     host_home_dir = os.path.expanduser('~')
@@ -42,5 +45,5 @@ def start( base_path ):
     run_line += " -v " + str( base_path ) + ":/repo"
     run_line += gitconfig_line
     run_line += ssh_line
-    run_line += " -it mdi/tinker bash -c \"cd /repo && bash\""
+    run_line += " -it " + str(image_name) + " bash -c \"cd /repo && bash\""
     os.system(run_line)
