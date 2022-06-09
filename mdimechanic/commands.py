@@ -5,16 +5,13 @@ A tool for testing and developing MDI-enabled projects.
 Handles the primary functions
 """
 
-####
 import os
 import shutil
-import traceback
 from . import cmd_report
 from . import cmd_build
 from . import cmd_run
 from . import cmd_rundriver
 from . import cmd_interactive
-from .utils import tests as mtests
 from .utils import utils as ut
 
 def command_report():
@@ -41,7 +38,6 @@ def command_startproject( args ):
 
         yml_path = os.path.join( base_path, "mdimechanic.yml" )
         docker_path = os.path.join( base_path, "docker" )
-        #workflow_path = os.path.join( base_path, ".github" )
         gitignore_path = os.path.join( base_path, ".gitignore" )
         if os.path.exists( yml_path ) or os.path.exists( docker_path ):
             raise Exception("This already appears to be an MDI project")
@@ -52,7 +48,6 @@ def command_startproject( args ):
         gitignore_source = os.path.join( project_path, ".gitignore" )
         shutil.copyfile( yml_source, yml_path )
         shutil.copytree( docker_source, docker_path )
-        #shutil.copytree( workflow_source, workflow_path )
         shutil.copyfile( gitignore_source, gitignore_path )
 
     else:
