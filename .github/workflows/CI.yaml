@@ -38,9 +38,46 @@ jobs:
         python -m pip install . --no-deps
 
 
-    - name: Run tests
+    - name: Perform docker setup
+      if: matrix.os == 'ubuntu-latest'
+      uses: docker-practice/actions-setup-docker@master
+
+
+    - name: Test whether MDI Mechanic can start a project
+      if: matrix.os == 'ubuntu-latest'
       run: |
-        echo "Running tests"
+        set -x
+        mkdir ~/start_test
+        cd ~/start_test
+        mdimechanic startproject --enginereport
+#        mdimechanic build
+#        ls /home/runner/.local/lib/python3.8/site-packages/mdimechanic/docker/ssh
+
+
+    - name: Check for files
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        ls /home/runner/.local/lib/python3.8/site-packages/mdimechanic/docker/ssh
+
+
+    - name: Build the ELECTRIC MDI driver
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        set -x
+        mkdir ~/electric_test
+        cd ~/electric_test
+        git clone https://github.com/MolSSI-MDI/ELECTRIC_container.git
+        cd ELECTRIC_container
+        mdimechanic build
+
+
+    - name: Test the ELECTRIC MDI driver
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        set -x
+        cd ~/electric_test/ELECTRIC_container
+        mdimechanic run --name tcp
+
 
     - name: CodeCov
       uses: codecov/codecov-action@v1
