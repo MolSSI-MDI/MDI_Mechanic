@@ -9,10 +9,10 @@ Handles the primary functions
 import os
 import shutil
 import traceback
-from . import report
-from . import install
-from . import runcmd
-from . import interactive
+from . import cmd_report
+from . import cmd_build
+from . import cmd_run
+from . import cmd_interactive
 from .utils import tests as mtests
 from .utils import utils as ut
 
@@ -31,14 +31,14 @@ def get_calling_path():
 def command_report():
     print("Starting a report")
     report_dir = os.getcwd()
-    report.generate_report( report_dir )
+    cmd_report.generate_report( report_dir )
 
 
 
 def command_build():
     print("Starting the installation")
     report_dir = os.getcwd()
-    install.install_all( report_dir )
+    cmd_build.install_all( report_dir )
 
 
 
@@ -190,7 +190,7 @@ def command_run( args ):
 
     # Test the driver
     try:
-        runcmd.run( script_name, run_dir )
+        cmd_run.run( script_name, run_dir )
         print("Success: The driver ran to completion.")
     except:
         raise Exception("Error: The script did not complete successfully.")
@@ -211,7 +211,7 @@ def command_interactive( ):
     run_dir = os.getcwd()
 
     try:
-        interactive.start( run_dir )
+        cmd_interactive.start( run_dir )
         print("Success: Interactive session completed successfully.")
     except:
         raise Exception("Error: Interactive session did not complete successfully.")
