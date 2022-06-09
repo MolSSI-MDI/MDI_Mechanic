@@ -58,7 +58,7 @@ def command_startproject( args ):
         docker_path = os.path.join( base_path, "docker" )
         #workflow_path = os.path.join( base_path, ".github" )
         gitignore_path = os.path.join( base_path, ".gitignore" )
-        if os.path.exists( yml_path ) or os.path.exists( docker_path ) or os.path.exists( workflow_path ):
+        if os.path.exists( yml_path ) or os.path.exists( docker_path ):
             raise Exception("This already appears to be an MDI project")
 
         yml_source = os.path.join( project_path, "mdimechanic.yml" )
