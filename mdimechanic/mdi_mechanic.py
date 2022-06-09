@@ -12,6 +12,7 @@ import traceback
 from . import cmd_report
 from . import cmd_build
 from . import cmd_run
+from . import cmd_rundriver
 from . import cmd_interactive
 from .utils import tests as mtests
 from .utils import utils as ut
@@ -119,7 +120,7 @@ def command_rundriver( args ):
 
     # Test the driver
     try:
-        mtests.test_driver( driver_name, report_dir )
+        cmd_rundriver.test_driver( driver_name, report_dir )
         print("Success: The driver ran to completion.")
     except:
         raise Exception("Error: The test driver did not complete successfully.")
