@@ -4,7 +4,7 @@ Provides a CLI for MDI_Mechanic
 
 import argparse
 import sys
-from . import mdi_mechanic as mech
+from . import commands
 
 def parse_args():
     parser = argparse.ArgumentParser(description="A CLI for the MDI_Mechanic.")
@@ -48,14 +48,14 @@ def main(args=None):
 
     command = args.pop("command")
     if command == "build":
-        mech.command_build()
+        commands.command_build()
     elif command == "report":
-        mech.command_report()
+        commands.command_report()
     elif command == "startproject":
-        mech.command_startproject( args )
+        commands.command_startproject( args )
     elif command == "run":
-        mech.command_run( args )
+        commands.command_run( args )
     elif command == "rundriver":
-        mech.command_rundriver( args )
+        commands.command_rundriver( args )
     elif command == "interactive":
-        mech.command_interactive()
+        commands.command_interactive()
