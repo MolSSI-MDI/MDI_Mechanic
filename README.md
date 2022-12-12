@@ -6,6 +6,10 @@ MDI_Mechanic
 
 A tool for testing and developing MDI-enabled projects.
 
+### Documentation
+
+A tutorial for using MDI Mechanic is available [here](https://github.com/MolSSI-MDI/MDI_Mechanic/blob/master/docs/getting_started.rst).
+
 ### Copyright
 
 Copyright (c) 2020, Taylor Barnes
