@@ -1,11 +1,11 @@
 import os
 import subprocess
 import shutil
-from .utils.utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml, write_as_bytes
+from .utils import utils as ut
 
 
 def start( base_path ):
-    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+    mdimechanic_yaml = ut.get_mdimechanic_yaml( base_path )
 
     # Name of the image to run
     image_name = mdimechanic_yaml['docker']['image_name']
@@ -40,10 +40,22 @@ def start( base_path ):
     if not found_file:
         print("WARNING: MDI Mechanic was unable to locate a .ssh directory.  Git will not be fully functional within this interactive session.")
 
+    # This script will be executed on entry to the image
+    interactive_entry_script = '''#!/bin/bash
+set -e
+cd /repo
+bash
+'''
+
+    # Write the entry script into the mounted volume
+    interactive_entry_path = os.path.join( base_path, "docker", ".temp", "interactive_entry.sh" )
+    os.makedirs(os.path.dirname(interactive_entry_path), exist_ok=True)
+    ut.write_as_bytes( interactive_entry_script, interactive_entry_path )
+
     # Construct the command line to launch docker interactively
     run_line = "docker run --rm"
     run_line += " -v " + str( base_path ) + ":/repo"
     run_line += gitconfig_line
     run_line += ssh_line
-    run_line += " -it " + str(image_name) + " bash -c \"cd /repo && bash\""
+    run_line += " -it " + str(image_name) + " bash /repo/docker/.temp/interactive_entry.sh"
     os.system(run_line)

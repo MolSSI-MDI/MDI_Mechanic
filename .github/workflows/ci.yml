@@ -1,17 +1,13 @@
 name: CI
 
+# Controls when the action will run. Triggers the workflow on push or pull request events
 on:
   push:
     branches:
-      - "**"
+      - '**'
   pull_request:
     branches:
-      - "master"
-  schedule:
-    # Nightly tests run on master by default:
-    #   Scheduled workflows run on the latest commit on the default or base branch.
-    #   (from https://help.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
-    - cron: "0 0 * * *"
+      - '**'
 
 jobs:
   test:
@@ -54,10 +50,10 @@ jobs:
 #        ls /home/runner/.local/lib/python3.8/site-packages/mdimechanic/docker/ssh
 
 
-    - name: Check for files
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        ls /home/runner/.local/lib/python3.8/site-packages/mdimechanic/docker/ssh
+#    - name: Check for files
+#      if: matrix.os == 'ubuntu-latest'
+#      run: |
+#        ls /home/runner/.local/lib/python3.8/site-packages/mdimechanic/docker/ssh
 
 
     - name: Build the ELECTRIC MDI driver
