@@ -63,8 +63,20 @@ def install_all( base_path ):
     if ret != 0:
         raise Exception("Unable to build the engine image")
 
+    # This script will be executed on entry to the image
+    build_entry_script = '''#!/bin/bash
+set -e
+cd /repo
+bash .mdimechanic/.temp/build_engine.sh
+'''
+
+    # Write the entry script into the mounted volume
+    build_entry_path = os.path.join( base_path, "docker", ".temp", "build_entry.sh" )
+    os.makedirs(os.path.dirname(build_entry_path), exist_ok=True)
+    ut.write_as_bytes( build_entry_script, build_entry_path )
+
     # Build the engine, within its Docker image
-    docker_string = "docker run --rm -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic " + mdimechanic_yaml['docker']['image_name'] + " bash -c \"cd /repo && bash .mdimechanic/.temp/build_engine.sh \""
+    docker_string = "docker run --rm -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic " + mdimechanic_yaml['docker']['image_name'] + " bash /repo/docker/.temp/build_entry.sh"
     ret = os.system(docker_string)
     if ret != 0:
         raise Exception("Unable to build the engine")
