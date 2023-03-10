@@ -16,14 +16,35 @@ COPY docker-entrypoint.sh /bin/docker-entrypoint.sh
 # Build the image using a single RUN command
 #------------------------------------------------------------#
 
-RUN apt-get update -y && \
+RUN echo 'Acquire::Retries "30";' >> /etc/apt/apt.conf.d/80-retries && \
+    echo 'Acquire::http::Timeout "300";' >> /etc/apt/apt.conf.d/99timeout && \
+    echo 'Acquire::ftp::Timeout "300";' >> /etc/apt/apt.conf.d/99timeout && \
+    apt-get update -y && \
     apt-get install -y --no-install-recommends \
         gcc \
         g++ \
-        gfortran \
-        libmpich-dev \
+        gfortran && \
+    apt-get clean && \
+    apt-get purge && \
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        libmpich-dev && \
+    apt-get clean && \
+    apt-get purge && \
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
         make \
-        openssh-server \
+        openssh-server && \
+    apt-get clean && \
+    apt-get purge && \
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
         python3-dev \
         python3-pip && \
     apt-get clean && \
