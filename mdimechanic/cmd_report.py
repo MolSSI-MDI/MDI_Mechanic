@@ -21,7 +21,11 @@ def generate_report( base_path ):
     # Ensure that there are no orphaned containers / networks running
     try:
         #docker_path = os.path.join( base_path, "MDI_Mechanic", "docker" )
-        compose_path = ut.get_compose_path( "tcp" )
+        compose_path = None
+        if 'gpu' in mdimechanic_yaml['docker']:
+            ut.get_compose_path( "nvidia_tcp" )
+        else:
+            ut.get_compose_path( "tcp" )
         down_proc = subprocess.Popen( ["docker-compose", "down"],
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                       cwd=compose_path)

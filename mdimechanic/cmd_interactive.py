@@ -57,5 +57,7 @@ bash
     run_line += " -v " + str( base_path ) + ":/repo"
     run_line += gitconfig_line
     run_line += ssh_line
+    if 'gpu' in mdimechanic_yaml['docker']:
+        run_line += " --gpus all"
     run_line += " -it " + str(image_name) + " bash /repo/docker/.temp/interactive_entry.sh"
     os.system(run_line)

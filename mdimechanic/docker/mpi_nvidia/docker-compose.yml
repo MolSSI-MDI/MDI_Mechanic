@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  mdi_mechanic:
+    #build: .
+    image: "mdi_mechanic/mdi_mechanic"
+    volumes:
+      - "${MDIMECH_WORKDIR}:/repo"
+      - "${MDIMECH_PACKAGEDIR}:/MDI_Mechanic"
+    networks:
+      mdinet:
+        aliases:
+          - driverhost
+    depends_on:
+      - engine
+  engine:
+    #build: ../../user
+    image: "${MDIMECH_ENGINE_NAME}"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - "${MDIMECH_WORKDIR}:/repo"
+      - "${MDIMECH_PACKAGEDIR}:/MDI_Mechanic"
+    networks:
+      mdinet:
+        aliases:
+          - enginehost
+
+networks:
+  mdinet:
+    driver: "bridge"

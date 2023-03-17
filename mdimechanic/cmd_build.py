@@ -75,8 +75,13 @@ bash .mdimechanic/.temp/build_engine.sh
     os.makedirs(os.path.dirname(build_entry_path), exist_ok=True)
     ut.write_as_bytes( build_entry_script, build_entry_path )
 
+    # Check if there are any custom GPU options in mdimechanic.yml
+    gpu_options = ""
+    if 'gpu' in mdimechanic_yaml['docker']:
+        gpu_options = " --gpus all"
+
     # Build the engine, within its Docker image
-    docker_string = "docker run --rm -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic " + mdimechanic_yaml['docker']['image_name'] + " bash /repo/docker/.temp/build_entry.sh"
+    docker_string = "docker run --rm" + str(gpu_options) + " -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic " + mdimechanic_yaml['docker']['image_name'] + " bash /repo/docker/.temp/build_entry.sh"
     ret = os.system(docker_string)
     if ret != 0:
         raise Exception("Unable to build the engine")
