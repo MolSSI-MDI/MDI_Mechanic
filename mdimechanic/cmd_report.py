@@ -20,19 +20,22 @@ def generate_report( base_path ):
 
     # Ensure that there are no orphaned containers / networks running
     try:
-        #docker_path = os.path.join( base_path, "MDI_Mechanic", "docker" )
-        compose_path = None
-        if 'gpu' in mdimechanic_yaml['docker']:
-            compose_path = ut.get_compose_path( "nvidia_tcp" )
-        else:
-            compose_path = ut.get_compose_path( "tcp" )
+        compose_path = ut.get_compose_path( "tcp" )
         down_proc = subprocess.Popen( ["docker-compose", "down"],
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                       cwd=compose_path)
         down_tup = down_proc.communicate()
     except:
         raise Exception("Error: Unable to remove orphaned containers.")
-    
+    try:
+        compose_path = ut.get_compose_path( "tcp_nvidia" )
+        down_proc = subprocess.Popen( ["docker-compose", "down"],
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                      cwd=compose_path)
+        down_tup = down_proc.communicate()
+    except:
+        raise Exception("Error: Unable to remove orphaned containers.")
+
     # Verify that the engine has been built / installed correctly
     try:
         mtests.test_validate( base_path )

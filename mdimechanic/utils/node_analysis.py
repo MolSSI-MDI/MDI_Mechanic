@@ -66,7 +66,11 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
     else:
         mdi_driver_options = "-role DRIVER -name driver -method TCP -port 8021"
         mdi_engine_options = "-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021"
-        docker_path = get_compose_path( "tcp" )
+        docker_path = None
+        if 'gpu' in mdimechanic_yaml['docker']:
+            docker_path = get_compose_path( "tcp_nvidia" )
+        else:
+            docker_path = get_compose_path( "tcp" )
 
     # Create the script for MDI Mechanic
     docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
