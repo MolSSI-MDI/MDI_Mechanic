@@ -10,9 +10,9 @@ def test_driver( driver_name, base_path ):
     # Get the path to the docker-compose file
     docker_path = None
     if 'gpu' in mdimechanic_yaml['docker']:
-        get_compose_path( "nvidia_tcp" )
+        docker_path = get_compose_path( "nvidia_tcp" )
     else:
-        get_compose_path( "tcp" )
+        docker_path = get_compose_path( "tcp" )
 
     # Write the run script for MDI Mechanic
     docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
