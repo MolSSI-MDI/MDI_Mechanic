@@ -49,6 +49,7 @@ def docker_down( base_path, docker_path ):
 
 def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
     global use_mpi
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
 
     # Remove any leftover files from previous runs of min_driver.py
     #base_path = get_base_path()
@@ -95,7 +96,6 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
     os.makedirs(os.path.dirname(docker_file), exist_ok=True)
     writelines_as_bytes( docker_lines, docker_file )
 
-    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests']['script']
     script = "#!/bin/bash\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'" + str(mdi_engine_options) + "\'\n"
