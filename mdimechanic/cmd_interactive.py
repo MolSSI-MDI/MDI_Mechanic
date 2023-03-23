@@ -59,5 +59,8 @@ bash
     run_line += ssh_line
     if 'gpu' in mdimechanic_yaml['docker']:
         run_line += " --gpus all"
+    if 'extra_launch_options' in mdimechanic_yaml['docker']:
+        run_line += " " + str(mdimechanic_yaml['docker']['extra_launch_options'])
     run_line += " -it " + str(image_name) + " bash /repo/docker/.temp/interactive_entry.sh"
+    print("Interactive session run command: " + str(run_line))
     os.system(run_line)
