@@ -8,11 +8,38 @@ def run( script_name, base_path ):
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
 
     # Get the path to the docker-compose file
-    docker_path = None
-    if 'gpu' in mdimechanic_yaml['docker']:
-        docker_path = get_compose_path( "nvidia_run" )
-    else:
-        docker_path = get_compose_path( "run" )
+    #docker_path = None
+    #if 'gpu' in mdimechanic_yaml['docker']:
+    #    docker_path = get_compose_path( "nvidia_run" )
+    #else:
+    #    docker_path = get_compose_path( "run" )
+    docker_path = os.path.join( base_path, ".mdimechanic", ".temp" )
+
+
+
+    # Create the docker-compose.yml file
+    docker_compose_text='''version: '3'
+
+services:
+  engine:
+    #build: ../../user
+    image: "${MDIMECH_ENGINE_NAME}"
+    command: bash -c "bash /repo/.mdimechanic/.temp/docker_mdi_engine.sh"
+    volumes:
+      - "${MDIMECH_WORKDIR}:/repo"
+      - "${MDIMECH_PACKAGEDIR}:/MDI_Mechanic"
+    networks:
+      mdinet:
+        aliases:
+          - enginehost
+
+networks:
+  mdinet:
+    driver: "bridge"
+'''
+    docker_compose_path = os.path.join( base_path, ".mdimechanic", ".temp", "docker-compose.yml" )
+    os.makedirs(os.path.dirname(docker_compose_path), exist_ok=True)
+    write_as_bytes( docker_compose_text, docker_compose_path )
 
     # Write the run script for the engine
     #script_lines = mdimechanic_yaml['engine_tests']['script']
