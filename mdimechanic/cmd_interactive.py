@@ -8,7 +8,7 @@ def start( base_path ):
     mdimechanic_yaml = ut.get_mdimechanic_yaml( base_path )
 
     # Name of the image to run
-    image_name = mdimechanic_yaml['docker']['image_name']
+    image_name = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Find the location of .gitconfig file
     gitconfig_line = ""

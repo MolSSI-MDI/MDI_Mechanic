@@ -13,6 +13,10 @@ def parse_args():
 
     build = subparsers.add_parser("build", help="Build containers for MDI_Mechanic and the engine.")
     #build.add_argument("location", type=str, help="The location where the engine is located.")
+    build.add_argument("--type", dest='build_type',
+                     type=str,
+                     default="dev",
+                     help="Type of build. (\"dev\" [Default] or \"release\")")
 
     startproject = subparsers.add_parser("startproject", help="Start a new MDI project.")
     startproject.add_argument("--enginereport", dest='projecttype', action='store_const',
@@ -48,7 +52,7 @@ def main(args=None):
 
     command = args.pop("command")
     if command == "build":
-        commands.command_build()
+        commands.command_build( args )
     elif command == "report":
         commands.command_report()
     elif command == "startproject":

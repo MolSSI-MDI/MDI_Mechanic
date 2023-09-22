@@ -34,7 +34,8 @@ services:
                     'workdir': base_path,
                     'packagedir': get_package_path(),
                     'script_file_name': script_file_name,
-                    'icontainer': icontainer}
+                    'icontainer': icontainer,
+                    'container_name': containers[icontainer]}
         docker_compose_text += '''
     image: "{image_name}"
     command: bash -c "bash /repo/.mdimechanic/.temp/{script_file_name}"
@@ -44,7 +45,7 @@ services:
     networks:
       mdinet:
         aliases:
-          - enginehost{icontainer}
+          - {container_name}
 '''.format(**textargs)
 
         if 'gpu' in mdimechanic_yaml['docker']:
