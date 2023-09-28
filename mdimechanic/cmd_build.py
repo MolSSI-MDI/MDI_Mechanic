@@ -23,8 +23,8 @@ def install_all( base_path, build_type ):
         build_image_script += "cd /repo\n"
         for line in build_engine_lines:
             build_image_script += line + '\n'
-        build_image_script += "cd /\n"
-        build_image_script += "mv /repo /release"
+        #build_image_script += "cd /\n"
+        #build_image_script += "mv /repo /release"
 
     # Write the script to build the image
     image_script_path = os.path.join( base_path, "docker", ".temp", "build_image.sh" )

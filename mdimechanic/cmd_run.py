@@ -38,9 +38,9 @@ services:
                     'container_name': containers[icontainer]}
         docker_compose_text += '''
     image: "{image_name}"
-    command: bash -c "bash /repo/.mdimechanic/.temp/{script_file_name}"
+    command: bash -c "bash /mdi_shared/.mdimechanic/.temp/{script_file_name}"
     volumes:
-      - '{workdir}:/repo'
+      - '{workdir}:/mdi_shared'
       - '{packagedir}:/MDI_Mechanic'
     networks:
       mdinet:
@@ -75,8 +75,15 @@ networks:
 
         # Write the run script for the engine
         script_lines = container_yaml['script']
-        script = "#!/bin/bash\nset -e\ncd /repo\n"
-        script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
+        script = '''#!/bin/bash\nset -e
+cd /mdi_shared
+export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'
+if [ ! -d "/repo" ]; then
+    ln -s /mdi_shared /repo
+fi
+'''
+        #script = "#!/bin/bash\nset -e\ncd /mdi_shared\n"
+        #script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
         for line in script_lines:
             script += line + '\n'
 
