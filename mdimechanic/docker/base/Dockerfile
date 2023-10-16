@@ -2,7 +2,7 @@
 # Base docker file for the MDI project
 #------------------------------------------------------------#
 
-FROM ubuntu:20.04
+FROM ubuntu:23.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -46,19 +46,27 @@ RUN apt-get update -y && \
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
         python3-dev \
+        python3-venv \
         python3-pip && \
     apt-get clean && \
     apt-get purge && \
-    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/* && \
+    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+# Create a python virtual environment
+RUN python3 -m venv /opt/venv
+
+# Activate the virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+
     #
     #--------------------------------------------------------#
     # Ensure that Python 3 is used by default
     #--------------------------------------------------------#
     #
-    cd /usr/local/bin && \
+RUN cd /usr/local/bin && \
     ln -s /usr/bin/python3 python && \
     pip3 install --upgrade pip && \
-    rm pip && ln -s /usr/bin/pip3 pip && \
+    ln -s /usr/bin/pip3 pip && \
     #
     #--------------------------------------------------------#
     # Enable ssh access for "mpiuser"

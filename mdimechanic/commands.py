@@ -19,10 +19,16 @@ def command_report():
     report_dir = os.getcwd()
     cmd_report.generate_report( report_dir )
 
-def command_build():
+def command_build( args ):
     print("Starting the installation")
+
+    build_type = args.pop("build_type")
+
+    if ( build_type != "dev" and build_type != "release"):
+        raise Exception("Error: invalid argument to --type option.")
+
     report_dir = os.getcwd()
-    cmd_build.install_all( report_dir )
+    cmd_build.install_all( report_dir, build_type )
 
 def command_startproject( args ):
     print("Starting a new MDI project")

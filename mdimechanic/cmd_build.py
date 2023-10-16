@@ -2,15 +2,29 @@ import os
 import subprocess
 from .utils import utils as ut
 
-def install_all( base_path ):
+def install_all( base_path, build_type ):
     # Read the yaml file
     mdimechanic_yaml = ut.get_mdimechanic_yaml( base_path )
+
+    build_release = False
+    if build_type == "release":
+       build_release = True
 
     # Read the script to build the image from the yaml file
     build_image_lines = mdimechanic_yaml['docker']['build_image']
     build_image_script = "#!/bin/bash\nset -e\n"
     for line in build_image_lines:
         build_image_script += line + '\n'
+
+    if build_release:
+        # Also build the engine within this image
+        build_engine_lines = mdimechanic_yaml['docker']['build_engine']
+        build_image_script += "mkdir -p /repo\n"
+        build_image_script += "cd /repo\n"
+        for line in build_engine_lines:
+            build_image_script += line + '\n'
+        #build_image_script += "cd /\n"
+        #build_image_script += "mv /repo /release"
 
     # Write the script to build the image
     image_script_path = os.path.join( base_path, "docker", ".temp", "build_image.sh" )
@@ -58,7 +72,12 @@ def install_all( base_path ):
         ut.docker_error( ssh_tup, "Error during ssh key generation." )
 
     # Build the engine image
-    build_command = "docker build -t " + mdimechanic_yaml['docker']['image_name'] + " docker"
+    tag = mdimechanic_yaml['docker']['image_name']
+    if build_release:
+        tag += ":release"
+    else:
+        tag += ":dev"
+    build_command = "docker build -t " + tag + " docker"
     ret = os.system( build_command )
     if ret != 0:
         raise Exception("Unable to build the engine image")
@@ -80,8 +99,10 @@ bash .mdimechanic/.temp/build_engine.sh
     if 'gpu' in mdimechanic_yaml['docker']:
         gpu_options = " --gpus all"
 
-    # Build the engine, within its Docker image
-    docker_string = "docker run --rm" + str(gpu_options) + " -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic " + mdimechanic_yaml['docker']['image_name'] + " bash /repo/docker/.temp/build_entry.sh"
-    ret = os.system(docker_string)
-    if ret != 0:
-        raise Exception("Unable to build the engine")
+    if not build_release:
+
+        # Build the engine, within its Docker image
+        docker_string = "docker run --rm" + str(gpu_options) + " -v " + str(base_path) + ":/repo -v " + str(package_path) + ":/MDI_Mechanic " + mdimechanic_yaml['docker']['image_name'] + ":dev bash /repo/docker/.temp/build_entry.sh"
+        ret = os.system(docker_string)
+        if ret != 0:
+            raise Exception("Unable to build the engine")

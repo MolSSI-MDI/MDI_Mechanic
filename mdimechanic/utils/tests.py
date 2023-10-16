@@ -28,7 +28,7 @@ def test_validate( base_path ):
     test_proc = subprocess.Popen( ["docker", "run", "--rm",
                                    "-v", str(base_path) + ":/repo",
                                    "-v", str(package_path) + ":/MDI_Mechanic",
-                                   mdimechanic_yaml['docker']['image_name'],
+                                   mdimechanic_yaml['docker']['image_name'] + ":dev",
                                    "bash", "-c",
                                    "cd /repo && bash .mdimechanic/.temp/validate_engine.sh"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -80,7 +80,7 @@ def test_min( base_path ):
     docker_env = os.environ
     docker_env['MDIMECH_WORKDIR'] = base_path
     docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
-    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
+    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Run "docker-compose up"
     up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],
@@ -153,7 +153,7 @@ def test_unsupported( base_path ):
     docker_env = os.environ
     docker_env['MDIMECH_WORKDIR'] = base_path
     docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
-    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
+    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Run "docker-compose up"
     up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],

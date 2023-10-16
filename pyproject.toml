@@ -14,7 +14,7 @@ authors = [
 ]
 license = { text = "BSD-3-Clause" }
 dependencies = [
-  'PyYAML ~= 5.0',
+  'PyYAML >= 5.0',
 ]
 
 requires-python = ">=3.8"

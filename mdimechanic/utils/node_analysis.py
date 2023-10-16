@@ -20,7 +20,7 @@ def docker_up( base_path, docker_path ):
     docker_env = os.environ
     docker_env['MDIMECH_WORKDIR'] = base_path
     docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
-    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
+    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Run "docker-compose up -d"
     up_proc = subprocess.Popen( ["docker-compose", "up", "-d"],
@@ -119,7 +119,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_env = os.environ
         docker_env['MDIMECH_WORKDIR'] = base_path
         docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
-        docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
+        docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
         # Run "docker-compose exec"
         exec_proc = subprocess.Popen( ["docker-compose", "exec", "-T", "--user", "mpiuser", "mdi_mechanic", "mpiexec", "-app", "/MDI_Mechanic/mdimechanic/docker/mpi/mdi_appfile"],
@@ -139,7 +139,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_env = os.environ
         docker_env['MDIMECH_WORKDIR'] = base_path
         docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
-        docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
+        docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
         # Run the docker container
         up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],
@@ -237,7 +237,10 @@ def find_nodes( base_path ):
                 include = True
                 for node_edge in node_edge_paths:
                     if node_edge[0] == node_name:
-                        path = node_edge[1].split()
+                        if node_edge[1] == '':
+                            path = ['',]
+                        else:
+                            path = node_edge[1].split()
                         if path[0] == split_path[0]:
                             include = False
 
