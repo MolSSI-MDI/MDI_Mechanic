@@ -41,7 +41,7 @@ def start( base_path ):
         print("WARNING: MDI Mechanic was unable to locate a .ssh directory.  Git will not be fully functional within this interactive session.")
 
     # This script will be executed on entry to the image
-    interactive_entry_script = '''#!/bin/bash
+    interactive_entry_script = '''#!/bin/bash -l
 set -e
 cd /repo
 bash

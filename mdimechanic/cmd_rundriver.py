@@ -16,7 +16,7 @@ def test_driver( driver_name, base_path ):
 
     # Write the run script for MDI Mechanic
     docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
-    docker_lines = [ "#!/bin/bash\n",
+    docker_lines = [ "#!/bin/bash -l\n",
                      "set -e\n",
                      "\n",
                      "cd /repo\n"]
@@ -44,7 +44,7 @@ def test_driver( driver_name, base_path ):
     docker_env = os.environ
     docker_env['MDIMECH_WORKDIR'] = base_path
     docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
-    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name']
+    docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Run "docker-compose up"
     up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],
