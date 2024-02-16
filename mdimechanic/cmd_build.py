@@ -18,7 +18,11 @@ def install_all( base_path, build_type ):
 
     if build_release:
         # Also build the engine within this image
-        build_engine_lines = mdimechanic_yaml['docker']['build_engine']
+        build_engine_lines = ""
+        if 'build_code' in mdimechanic_yaml['docker']:
+            build_engine_lines = mdimechanic_yaml['docker']['build_code']
+        else:
+            build_engine_lines = mdimechanic_yaml['docker']['build_engine']
         build_image_script += "mkdir -p /repo\n"
         build_image_script += "cd /repo\n"
         for line in build_engine_lines:
@@ -32,7 +36,11 @@ def install_all( base_path, build_type ):
     ut.write_as_bytes( build_image_script, image_script_path )
 
     # Read the script to build the engine from the yaml file
-    build_engine_lines = mdimechanic_yaml['docker']['build_engine']
+    build_engine_lines = ""
+    if 'build_code' in mdimechanic_yaml['docker']:
+        build_engine_lines = mdimechanic_yaml['docker']['build_code']
+    else:
+        build_engine_lines = mdimechanic_yaml['docker']['build_engine']
     build_engine_script = "#!/bin/bash -l\nset -e\ncd /repo\n"
     for line in build_engine_lines:
         build_engine_script += line + '\n'
