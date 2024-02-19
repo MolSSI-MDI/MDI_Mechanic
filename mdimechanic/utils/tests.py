@@ -29,7 +29,7 @@ def test_validate( base_path ):
                                    "-v", str(base_path) + ":/repo",
                                    "-v", str(package_path) + ":/MDI_Mechanic",
                                    mdimechanic_yaml['docker']['image_name'] + ":dev",
-                                   "bash", "-c",
+                                   "bash", "-l", "-c",
                                    "cd /repo && bash .mdimechanic/.temp/validate_engine.sh"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     test_tup = test_proc.communicate()
@@ -46,7 +46,7 @@ def test_min( base_path ):
 
     # Write the run script for MDI Mechanic
     docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
-    docker_lines = [ "#!/bin/bash\n",
+    docker_lines = [ "#!/bin/bash -l\n",
                      "\n",
                      "# Exit if any command fails\n",
                      "\n",
@@ -59,7 +59,7 @@ def test_min( base_path ):
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests']['script']
-    script = "#!/bin/bash\nset -e\ncd /repo\n"
+    script = "#!/bin/bash -l\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
     for line in script_lines:
         script += line + '\n'
@@ -132,7 +132,7 @@ def test_unsupported( base_path ):
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests']['script']
-    script = "#!/bin/bash\nset -e\ncd /repo\n"
+    script = "#!/bin/bash -l\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
     for line in script_lines:
         script += line + '\n'
