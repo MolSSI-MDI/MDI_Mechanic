@@ -86,11 +86,12 @@ def command_rundriver( args ):
     except:
         raise Exception("Error: The test driver did not complete successfully.")
 
-def command_interactive( ):
+def command_interactive( args ):
     run_dir = os.getcwd()
+    image_name = args.pop("image_name")
 
     try:
-        cmd_interactive.start( run_dir )
+        cmd_interactive.start( image_name, run_dir )
         print("Success: Interactive session completed successfully.")
     except:
         raise Exception("Error: Interactive session did not complete successfully.")
