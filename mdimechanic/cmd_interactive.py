@@ -4,11 +4,13 @@ import shutil
 from .utils import utils as ut
 
 
-def start( base_path ):
+def start( image_name, base_path ):
     mdimechanic_yaml = ut.get_mdimechanic_yaml( base_path )
 
     # Name of the image to run
-    image_name = mdimechanic_yaml['docker']['image_name'] + ":dev"
+    if image_name is None:
+        # The user did not supply an image name, so try using a ":dev" tag
+        image_name = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Find the location of .gitconfig file
     gitconfig_line = ""
@@ -43,6 +45,9 @@ def start( base_path ):
     # This script will be executed on entry to the image
     interactive_entry_script = '''#!/bin/bash -l
 set -e
+if [ ! -d "/repo" ]; then
+  ln -s /mdi_shared /repo
+fi
 cd /repo
 bash
 '''
@@ -54,13 +59,13 @@ bash
 
     # Construct the command line to launch docker interactively
     run_line = "docker run --rm"
-    run_line += " -v " + str( base_path ) + ":/repo"
+    run_line += " -v " + str( base_path ) + ":/mdi_shared"
     run_line += gitconfig_line
     run_line += ssh_line
     if 'gpu' in mdimechanic_yaml['docker']:
         run_line += " --gpus all"
     if 'extra_launch_options' in mdimechanic_yaml['docker']:
         run_line += " " + str(mdimechanic_yaml['docker']['extra_launch_options'])
-    run_line += " -it " + str(image_name) + " bash /repo/docker/.temp/interactive_entry.sh"
+    run_line += " -it " + str(image_name) + " bash /mdi_shared/docker/.temp/interactive_entry.sh"
     print("Interactive session run command: " + str(run_line))
     os.system(run_line)

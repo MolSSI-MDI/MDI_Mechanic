@@ -38,6 +38,10 @@ def parse_args():
                            help="Name of the test driver to run.")
 
     interactive = subparsers.add_parser("interactive", help="Start an interactive session within a container.")
+    interactive.add_argument("--image", dest='image_name',
+                             type=str,
+                             default=None,
+                             help="Name of the image to run interactively.")
 
     args = vars(parser.parse_args())
     if args["command"] is None:
@@ -62,4 +66,4 @@ def main(args=None):
     elif command == "rundriver":
         commands.command_rundriver( args )
     elif command == "interactive":
-        commands.command_interactive()
+        commands.command_interactive( args )
