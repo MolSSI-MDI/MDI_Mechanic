@@ -50,7 +50,13 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.intersphinx',
     'sphinx.ext.extlinks',
+    'sphinx_design',
+    'sphinx_copybutton',
+    'myst_parser'
 ]
+
+
+myst_enable_extensions = ["colon_fence"]    
 
 autosummary_generate = True
 napoleon_google_docstring = False
@@ -74,7 +80,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -90,19 +96,48 @@ pygments_style = 'default'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "pydata_sphinx_theme"
+
+
+# Project logo option
+html_logo = "_static/molssi_main_logo.png"
+html_favicon = "_static/molssi_square.png"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+	"github_url": "https://github.com/MolSSI/molssi_doc_theme",
+	"twitter_url": "https://twitter.com/MolSSI_NSF",
+
+	"logo": {
+      "image_light": "molssi_main_logo.png",
+      "image_dark": "molssi_main_logo_inverted_white.png",
+      "text": "MolSSI Driver Interface",
+      "molssi_light": "molssi_main_logo.png",
+      "molssi_dark": "molssi_main_logo_inverted_white.png",
+    },
+	"show_toc_level": 2,
+	"header_links_before_dropdown": 4,
+	"external_links": [
+      {"name": "MolSSI", "url": "https://molssi.org"}
+  ],
+
+	"secondary_sidebar_items": ["page-toc", "sourcelink"],
+    "footer_start": [ "molssi_footer" ],
+    "footer_end": [],
+    "icon_links": [],
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_css_files = [
+  'css/custom.css',
+]
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
@@ -111,8 +146,10 @@ html_static_path = ['_static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {}
 
+# html_sidebars = {
+#   "**": ['globaltoc.html', 'search-field.html']
+# }
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
