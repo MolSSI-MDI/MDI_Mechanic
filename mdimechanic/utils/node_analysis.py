@@ -3,6 +3,7 @@ import sys
 import subprocess
 import pickle
 from .utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml, writelines_as_bytes, write_as_bytes
+from .determine_compose import COMPOSE_COMMAND
 
 # Paths to enter each identified node
 node_paths = { "@DEFAULT": "" }
@@ -23,7 +24,7 @@ def docker_up( base_path, docker_path ):
     docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Run "docker-compose up -d"
-    up_proc = subprocess.Popen( ["docker-compose", "up", "-d"],
+    up_proc = subprocess.Popen( COMPOSE_COMMAND + ["up", "-d"],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                 cwd=docker_path, env=docker_env )
     up_tup = up_proc.communicate()
@@ -38,7 +39,7 @@ def docker_down( base_path, docker_path ):
     docker_env['MDIMECH_PACKAGEDIR'] = get_package_path()
 
     # Run "docker-compose down"
-    down_proc = subprocess.Popen( ["docker-compose", "down"],
+    down_proc = subprocess.Popen( COMPOSE_COMMAND + ["down"],
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                   cwd=docker_path, env=docker_env )
     down_tup = down_proc.communicate()
@@ -122,7 +123,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
         # Run "docker-compose exec"
-        exec_proc = subprocess.Popen( ["docker-compose", "exec", "-T", "--user", "mpiuser", "mdi_mechanic", "mpiexec", "-app", "/MDI_Mechanic/mdimechanic/docker/mpi/mdi_appfile"],
+        exec_proc = subprocess.Popen( COMPOSE_COMMAND + ["exec", "-T", "--user", "mpiuser", "mdi_mechanic", "mpiexec", "-app", "/MDI_Mechanic/mdimechanic/docker/mpi/mdi_appfile"],
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                       cwd=docker_path, env=docker_env )
         exec_tup = exec_proc.communicate()

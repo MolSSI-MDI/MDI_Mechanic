@@ -3,8 +3,11 @@ Provides a CLI for MDI_Mechanic
 """
 
 import argparse
+import subprocess
 import sys
 from . import commands
+
+from .utils import utils as ut
 
 def parse_args():
     parser = argparse.ArgumentParser(description="A CLI for the MDI_Mechanic.")
@@ -51,6 +54,7 @@ def parse_args():
     return args
 
 def main(args=None):
+    
     if args is None:
         args = parse_args()
 
