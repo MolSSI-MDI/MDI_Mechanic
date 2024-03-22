@@ -5,6 +5,7 @@ from .utils import tests as mtests
 from .utils import node_analysis as na
 from .utils import reset_report as rr
 from .utils import utils as ut
+from .utils.determine_compose import COMPOSE_COMMAND
 
 # Generate the report
 def generate_report( base_path ):
@@ -21,7 +22,7 @@ def generate_report( base_path ):
     # Ensure that there are no orphaned containers / networks running
     try:
         compose_path = ut.get_compose_path( "tcp" )
-        down_proc = subprocess.Popen( ["docker-compose", "down"],
+        down_proc = subprocess.Popen(COMPOSE_COMMAND + ["down"],
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                       cwd=compose_path)
         down_tup = down_proc.communicate()

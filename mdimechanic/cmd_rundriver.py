@@ -2,7 +2,7 @@ import os
 import subprocess
 import shutil
 from .utils.utils import format_return, insert_list, docker_error, get_mdi_standard, get_compose_path, get_package_path, get_mdimechanic_yaml, writelines_as_bytes, write_as_bytes
-
+from .utils.determine_compose import COMPOSE_COMMAND
 
 def test_driver( driver_name, base_path ):
     mdimechanic_yaml = get_mdimechanic_yaml( base_path )
@@ -47,7 +47,7 @@ def test_driver( driver_name, base_path ):
     docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
     # Run "docker-compose up"
-    up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],
+    up_proc = subprocess.Popen( COMPOSE_COMMAND + ["up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                 cwd=docker_path, env=docker_env )
     up_tup = up_proc.communicate()
@@ -56,7 +56,7 @@ def test_driver( driver_name, base_path ):
 
 
     # Run "docker-compose down"
-    down_proc = subprocess.Popen( ["docker-compose", "down"],
+    down_proc = subprocess.Popen( COMPOSE_COMMAND + ["down"],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                   cwd=docker_path, env=docker_env )
     down_tup = down_proc.communicate()
