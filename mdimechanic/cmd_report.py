@@ -30,7 +30,7 @@ def generate_report( base_path ):
         raise Exception("Error: Unable to remove orphaned containers.")
     try:
         compose_path = ut.get_compose_path( "tcp_nvidia" )
-        down_proc = subprocess.Popen( ["docker-compose", "down"],
+        down_proc = subprocess.Popen(COMPOSE_COMMAND + ["down"],
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                       cwd=compose_path)
         down_tup = down_proc.communicate()

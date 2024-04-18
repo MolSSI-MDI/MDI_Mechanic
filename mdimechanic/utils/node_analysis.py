@@ -143,7 +143,7 @@ def test_command( base_path, command, nrecv, recv_type, nsend, send_type ):
         docker_env['MDIMECH_ENGINE_NAME'] = mdimechanic_yaml['docker']['image_name'] + ":dev"
 
         # Run the docker container
-        up_proc = subprocess.Popen( ["docker-compose", "up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],
+        up_proc = subprocess.Popen(COMPOSE_COMMAND + ["up", "--exit-code-from", "mdi_mechanic", "--abort-on-container-exit"],
                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                     cwd=docker_path, env=docker_env )
         up_tup = up_proc.communicate()
