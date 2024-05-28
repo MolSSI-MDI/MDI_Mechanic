@@ -20,7 +20,7 @@ def start( image_name, base_path ):
     if found_file:
         gitconfig_line = " -v " + linux_location + ":/root/.gitconfig"
     else: # Check if this is Windows
-        windows_location = os.path.join( str( os.environ['USERPROFILE'] ), ".gitconfig" )
+        windows_location = os.path.join( str( os.getenv('USERPROFILE') ), ".gitconfig" )
         found_file = os.path.exists( windows_location )
         if found_file:
             gitconfig_line = " -v " + windows_location + ":/root/.gitconfig"
@@ -35,7 +35,7 @@ def start( image_name, base_path ):
     if found_file:
         ssh_line = " -v " + linux_location + ":/root/.ssh"
     else: # Check if this is Windows
-        windows_location = os.path.join( str( os.environ['USERPROFILE'] ), ".ssh" )
+        windows_location = os.path.join( str( os.getenv('USERPROFILE')), ".ssh" )
         found_file = os.path.exists( windows_location )
         if found_file:
             ssh_line = " -v " + windows_location + ":/root/.ssh"
