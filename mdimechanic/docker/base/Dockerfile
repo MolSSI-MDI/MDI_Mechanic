@@ -2,7 +2,7 @@
 # Base docker file for the MDI project
 #------------------------------------------------------------#
 
-FROM ubuntu:23.10
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
