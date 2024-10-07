@@ -41,8 +41,13 @@ def test_validate( base_path ):
 
 
 def test_min( base_path ):
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+
     # Get the path to the docker-compose file
-    docker_path = get_compose_path( "tcp" )
+    if 'gpu' in mdimechanic_yaml['docker']:
+        docker_path = get_compose_path( "tcp_nvidia" )
+    else:
+        docker_path = get_compose_path( "tcp" )
 
     # Write the run script for MDI Mechanic
     docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
@@ -57,7 +62,6 @@ def test_min( base_path ):
 
     # Write the run script for the engine
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
-    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests']['script']
     script = "#!/bin/bash -l\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"
@@ -105,8 +109,13 @@ def test_min( base_path ):
         docker_error( down_tup, "Minimal MDI functionality test returned non-zero exit code on docker down." )
 
 def test_unsupported( base_path ):
+    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
+
     # Get the path to the docker-compose file
-    docker_path = get_compose_path( "tcp" )
+    if 'gpu' in mdimechanic_yaml['docker']:
+        docker_path = get_compose_path( "tcp_nvidia" )
+    else:
+        docker_path = get_compose_path( "tcp" )
 
     # Write the run script for MDI Mechanic
     docker_file = os.path.join( base_path, ".mdimechanic", ".temp", "docker_mdi_mechanic.sh" )
@@ -130,7 +139,6 @@ def test_unsupported( base_path ):
     #                 "./run.sh\n"]
     #os.makedirs(os.path.dirname(docker_file), exist_ok=True)
     # NOTE: NEED TO LOOP OVER ALL AVAIALBLE TEST SCRIPTS
-    mdimechanic_yaml = get_mdimechanic_yaml( base_path )
     script_lines = mdimechanic_yaml['engine_tests']['script']
     script = "#!/bin/bash -l\nset -e\ncd /repo\n"
     script += "export MDI_OPTIONS=\'-role ENGINE -name TESTCODE -method TCP -hostname mdi_mechanic -port 8021\'\n"

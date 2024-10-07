@@ -49,7 +49,8 @@ services:
 '''.format(**textargs)
 
         if 'gpu' in mdimechanic_yaml['docker']:
-                docker_compose_text += '''deploy:
+                docker_compose_text += '''
+    deploy:
       resources:
         reservations:
           devices:
